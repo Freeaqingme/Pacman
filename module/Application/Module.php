@@ -10,15 +10,19 @@
 namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
+use Zend\ModuleManager\ModuleManager;
+use \Zend\Mvc\MvcEvent;
 
 class Module
 {
     public function onBootstrap($e)
     {
         $e->getApplication()->getServiceManager()->get('translator');
-        $eventManager        = $e->getApplication()->getEventManager();
+        $em                  = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
+        $moduleRouteListener->attach($em);
+
+        $em->attach(MvcEvent::EVENT_DISPATCH, array($this, 'redirectUnauthedUsersEvent'));
     }
 
     public function getConfig()
@@ -35,5 +39,36 @@ class Module
                 ),
             ),
         );
+    }
+
+
+    public function redirectUnauthedUsersEvent(MvcEvent $e)
+    {
+            $matches      = $e->getRouteMatch();
+            $controller   = $matches->getParam('controller');
+            $action       = $matches->getParam('action', 'index');
+
+            $sm = $e->getApplication()->getServiceManager();
+
+            $auth = $sm->get('zfcuser_auth_service');
+            if ($auth->hasIdentity()) {
+                return;
+            }
+
+            //@TODO: How do we get module here as well?
+            if ($controller == 'zfcuser' && ($action == 'register') || $action == 'login') {
+                return null;
+            }
+
+            /** @var $response \Zend\Http\PhpEnvironment\Response */
+            $response = $e->getResponse();
+            if ($response instanceof \Zend\Http\Response) {
+                $response->getHeaders()->addHeaderLine('Location', '/user/login');
+                $response->setStatusCode(307);
+
+            }
+
+            $e->stopPropagation();
+            return $response;
     }
 }
