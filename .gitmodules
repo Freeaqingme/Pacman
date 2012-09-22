@@ -7,3 +7,6 @@
 [submodule "vendor/ZfcUser"]
 	path = vendor/ZfcUser
 	url = git://github.com/ZF-Commons/ZfcUser.git
+[submodule "vendor/ZendDeveloperTools"]
+	path = vendor/ZendDeveloperTools
+	url = git@github.com:zendframework/ZendDeveloperTools.git
