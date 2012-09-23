@@ -51,7 +51,7 @@ software deployment processes.
 ## Future ideas
 Some other ideas that'd be helpful are:
 * Compatibility with Keepass
-* <moreToCome>
+* Yours?
 
 
 ## Security oversight
