@@ -2,6 +2,7 @@
 return array(
     'modules' => array(
         'Application',
+        'ZendDeveloperTools',
         'ZfcBase',
         'ZfcUser',
     ),
