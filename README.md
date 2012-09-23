@@ -1,9 +1,8 @@
-PACMAN
-=======================
+# PACMAN
+
 Password & ACcount MANager
 
-Introduction
-------------
+## Introduction
 This application is meant to store, retrieve and distribute passwords and account
 information. It is meant to be used in a multi-user multi-project environment, 
 and focuses on security (d'oh) by e.g. employing PGP, a defense in depth
@@ -14,21 +13,19 @@ Please contact us if you require a different license. The application uses
 several Open Source components:
 * Zend Framework 2, BSD Licensed   http://framework.zend.com
 * Openpgpjs, GPLv2                 http://openpgpjs.org/
-* PHP, PHP License v3.01           http:/php.net
+* PHP, PHP License v3.01           http://php.net
 
-WIP
----
+## WIP
 In 2004 an application (referred to as Pacman v1) was written and has been in
 use at Enrise (www.enrise.com) ever since. Because the application lacks certain
 functionality, usability and security it was decided to start from scratch
 (Sept. 2012).
 
 Currently this means that PACMAN is still under development, and that the features
-and mechanisms described may not have been realized yet. Feel free to contribute
+and mechanisms described below may not have been realized yet. Feel free to contribute
 or just take a look at the code, but be sure to NOT USE THIS IN PRODUCTION YET.
 
-Key Features
-------------
+## Key Features
 * Zend Framework 2 based [DONE]
 * Endorse use of Principle of Least Privilege (secure by design).
 * Allow for a Defense in Depth architecture where at least two components need
@@ -51,15 +48,13 @@ them to.
 * Allow programmatic retrieval of specific passwords, designed for
 software deployment processes.
 
-Future ideas
-------------
+## Future ideas
 Some other ideas that'd be helpful are:
 * Compatibility with Keepass
 * <moreToCome>
 
 
-Security oversight
-------------------
+## Security oversight
 PACMAN will consist out of multiple components:
 * User
 * Browser, optionally having stored the user's private PGP key in its local storage,
@@ -90,27 +85,24 @@ considered the weakest link in the component chain it was chosen not to place
 this responsibility at the client. Of course, these actions are auditlogged as well.
 
 
-Review
-~~~~~~
+###Review
 Although every choice in designing this software has been done with security
 in mind, the application was still written by people (who by definition make
 mistakes). Therefore any (security) review is welcome. If you've found anything
 serious please disclose responsibly.
 
 
-Installation
-------------
+##Installation
 You can install using native git submodules:
 
     git clone git://github.com/Enrise/Pacman.git --recursive
 
-Virtual Host
-------------
+### Virtual Host
+
 Afterwards, set up a virtual host to point to the public/ directory of the
 project and you should be ready to go! (of course, for development only)
 
-Disclaimer
-----------
+##Disclaimer
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
