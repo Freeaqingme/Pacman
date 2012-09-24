@@ -21,7 +21,6 @@ class IndexController extends AbstractActionController
                       'Zend\View\Model\FeedModel' => array('application/rss+xml',
                                                            'application/atom+xml'),
                       'Zend\View\Model\ViewModel' => '*/*'));
-
         return new $modelName();
     }
 }

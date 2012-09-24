@@ -82,8 +82,6 @@ class AcceptantViewModelSelector extends AbstractPlugin
             return $res;
         }
 
-
-        //@todo return actual instance, make sure to preserve \
         $modelName = $res->matchAgainst->params['_internalViewModel'];
         return str_replace('|', '\\', $modelName);
     }
