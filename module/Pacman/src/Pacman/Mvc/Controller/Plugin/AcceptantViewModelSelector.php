@@ -64,6 +64,7 @@ class AcceptantViewModelSelector extends AbstractPlugin
 
         $matchAgainstString = '';
         foreach ($matchAgainst as $modelName => $modelStrings) {
+            $modelName = str_replace('\\', '|', $modelName);
             foreach ((array) $modelStrings as $modelString) {
                 $matchAgainstString .= $modelString
                                     . '; _internalViewModel="' . $modelName . '", ';
@@ -83,7 +84,8 @@ class AcceptantViewModelSelector extends AbstractPlugin
 
 
         //@todo return actual instance, make sure to preserve \
-        return $res->matchAgainst->params['_internalViewModel'];
+        $modelName = $res->matchAgainst->params['_internalViewModel'];
+        return str_replace('|', '\\', $modelName);
     }
 
     /**
