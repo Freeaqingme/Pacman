@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Application\Controller;
+namespace Pacman\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -16,6 +16,11 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
+        $this->AcceptantViewModelSelector(
+                array('Zend\\View\\Model\\JsonModel' => 'application/json',
+                      'Zend\View\Model\FeedModel' => array('application/rss+xml',
+                                                           'application/atom+xml'),
+                      'Zend\\View\\Model\\ViewModel' => '*/*'));
         return new ViewModel();
     }
 }
