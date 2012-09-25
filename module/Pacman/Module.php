@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Application;
+namespace Pacman;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\ModuleManager\ModuleManager;
@@ -44,31 +44,30 @@ class Module
 
     public function redirectUnauthedUsersEvent(MvcEvent $e)
     {
-            $matches      = $e->getRouteMatch();
-            $controller   = $matches->getParam('controller');
-            $action       = $matches->getParam('action', 'index');
+        $matches      = $e->getRouteMatch();
+        $controller   = $matches->getParam('controller');
+        $action       = $matches->getParam('action', 'index');
 
-            $sm = $e->getApplication()->getServiceManager();
+        $sm = $e->getApplication()->getServiceManager();
 
-            $auth = $sm->get('zfcuser_auth_service');
-            if ($auth->hasIdentity()) {
-                return;
-            }
+        $auth = $sm->get('zfcuser_auth_service');
+        if ($auth->hasIdentity()) {
+            return;
+        }
 
-            //@TODO: How do we get module here as well?
-            if ($controller == 'zfcuser' && ($action == 'register') || $action == 'login') {
-                return null;
-            }
+        //@TODO: How do we get module here as well?
+        if ($controller == 'zfcuser' && ($action == 'register') || $action == 'login') {
+            return null;
+        }
 
-            /** @var $response \Zend\Http\PhpEnvironment\Response */
-            $response = $e->getResponse();
-            if ($response instanceof \Zend\Http\Response) {
-                $response->getHeaders()->addHeaderLine('Location', '/user/login');
-                $response->setStatusCode(307);
+        /** @var $response \Zend\Http\PhpEnvironment\Response */
+        $response = $e->getResponse();
+        if ($response instanceof \Zend\Http\Response) {
+            $response->getHeaders()->addHeaderLine('Location', '/user/login');
+            $response->setStatusCode(307);
 
-            }
+        }
 
-            $e->stopPropagation();
-            return $response;
+        return $response;
     }
 }
