@@ -9,11 +9,11 @@
 
 
 return array(
-        'controller_plugins' => array(
-                'invokables' => array(
-                        'acceptantViewModelSelector' => 'Pacman\Mvc\Controller\Plugin\AcceptantViewModelSelector',
-                        )
-                        ),
+        //'controller_plugins' => array(
+                //'invokables' => array(
+                        //'acceptantViewModelSelector' => 'Pacman\Mvc\Controller\Plugin\AcceptantViewModelSelector',
+                        //)
+                        //),
 
     'router' => array(
         'routes' => array(

@@ -16,11 +16,6 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        $modelName = $this->AcceptantViewModelSelector(
-                array('Zend\View\Model\JsonModel' => 'application/json',
-                      'Zend\View\Model\FeedModel' => array('application/rss+xml',
-                                                           'application/atom+xml'),
-                      'Zend\View\Model\ViewModel' => '*/*'));
-        return new $modelName();
+        return new ViewModel();
     }
 }
