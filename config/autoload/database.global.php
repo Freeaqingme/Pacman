@@ -9,6 +9,6 @@ return array(
         'driver'    => 'pdo',
         'dsn'       => 'mysql:dbname=pacman;host=localhost',
         'username'  => 'root',
-        'password'  => '',
+        'password'  => 'secret',
     ),
 );

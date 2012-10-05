@@ -13,6 +13,8 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\ModuleManager\ModuleManager;
 use \Zend\Mvc\MvcEvent;
 
+use Pacman\Model\ProjectTable;
+
 class Module
 {
     public function onBootstrap($e)
@@ -70,4 +72,17 @@ class Module
 
         return $response;
     }
+	
+	public function getServiceConfig()
+	{
+		return array(
+			'factories' => array(
+				'Pacman\Module\ProjectTable' => function($sm) {
+					$dbAdapter	=	$sm->get('Zend\Db\Adapter\Adapter');
+					$table		=	new ProjectTable($dbAdapter);
+					return $table;
+				},
+			),
+		);
+	}
 }
