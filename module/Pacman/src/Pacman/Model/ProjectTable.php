@@ -35,5 +35,21 @@ class ProjectTable extends AbstractTableGateway
 		return $resultSet;
 	}
 	
+	public function fetchProject($id)
+    {
+        $id  = (int) $id;
+
+        $rowset = $this->select(array(
+            'project_id' => $id,
+        ));
+
+        $row = $rowset->current();
+
+        if (!$row) {
+            throw new \Exception("Could not find project with ID $id");
+        }
+
+        return $row;
+    }
 
 }

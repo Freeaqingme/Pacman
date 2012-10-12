@@ -8,7 +8,7 @@ return array(
     'db' => array(
         'driver'    => 'pdo',
         'dsn'       => 'mysql:dbname=pacman;host=localhost',
-        'username'  => 'root',
+        'username'  => 'pacman2',
         'password'  => 'secret',
     ),
 );

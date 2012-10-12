@@ -1,3 +1,6 @@
 <div class="hero-unit">
-    <h1><?php echo sprintf($this->translate('%sPacman V2%s Projects SPECIFIC VIEW'), '<span class="zf-green">', '</span>') ?></h1>
+    <h1><?php echo sprintf($this->translate('Project <span class="zf-green">%s</span>'),$project->name); ?></h1>
+	<p><?php echo $project->description; ?></p>
+	
+	
 </div>

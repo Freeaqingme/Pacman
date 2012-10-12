@@ -25,7 +25,9 @@ class ProjectController extends AbstractActionController
 	
 	public function viewAction()
     {
-		return new ViewModel();
+		return new ViewModel(array(
+			'project' => $this->getProjectTable()->fetchProject($this->params()->fromRoute('id', 0)),
+		));
     }
 	
 	public function getProjectTable()
