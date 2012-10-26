@@ -59,6 +59,9 @@ class Module
 
         //@TODO: How do we get module here as well?
         if ($controller == 'zfcuser' && ($action == 'register') || $action == 'login') {
+            
+            //var_dump($auth);
+            
             return null;
         }
 

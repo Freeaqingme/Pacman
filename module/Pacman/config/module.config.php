@@ -73,6 +73,12 @@ return array(
                         ),
                     ),
                 ),
+                'permission' => array (
+                    'admin' => 512,
+                    'alterlogin' => 256,
+                    'modifyallprojects' => 128,
+                    'createproject' => 64,
+                ),
             ),
         ),
     ),
@@ -103,7 +109,7 @@ return array(
         'doctype'                  => 'HTML5',
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
-        'template_map' => array(
+        'template_map' => array(    //I guess there is a better, easier way for this...
             'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
             'pacman/index/index'      => __DIR__ . '/../view/pacman/index/index.phtml',
             'pacman/projects/index'   => __DIR__ . '/../view/pacman/projects/index.phtml',
