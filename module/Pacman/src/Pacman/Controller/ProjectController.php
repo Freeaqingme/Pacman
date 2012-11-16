@@ -25,6 +25,12 @@ class ProjectController extends AbstractActionController
 	
 	public function viewAction()
     {
+        
+        $identity=$this->zfcUserAuthentication()->getIdentity();
+        echo $identity->getId();
+        // -> here https://github.com/ZF-Commons/ZfcRbac
+        //var_dump();
+        
 		return new ViewModel(array(
 			'project' => $this->getProjectTable()->fetchProject($this->params()->fromRoute('id', 0)),
 		));

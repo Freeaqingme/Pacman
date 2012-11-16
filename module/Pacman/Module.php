@@ -19,6 +19,9 @@ class Module
 {
     public function onBootstrap($e)
     {
+        error_reporting(E_ALL);
+        ini_set('display_errors',1);
+                
         $e->getApplication()->getServiceManager()->get('translator');
         $em                  = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
