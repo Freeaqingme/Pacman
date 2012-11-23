@@ -14,6 +14,7 @@ use Zend\ModuleManager\ModuleManager;
 use \Zend\Mvc\MvcEvent;
 
 use Pacman\Model\ProjectTable;
+use Pacman\Model\EnvironmentTable;
 
 class Module
 {
@@ -87,6 +88,11 @@ class Module
 					$dbAdapter	=	$sm->get('Zend\Db\Adapter\Adapter');
 					$table		=	new ProjectTable($dbAdapter);
 					return $table;
+				},
+                'Pacman\Module\EnvironmentTable' => function($sm) {
+					$dbAdapter	        =	$sm->get('Zend\Db\Adapter\Adapter');
+					$environmentTable	=	new EnvironmentTable($dbAdapter);
+					return $environmentTable;
 				},
 			),
 		);

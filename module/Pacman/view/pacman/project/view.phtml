@@ -1,13 +1,11 @@
 <div class="hero-unit">
-    <div class="well">
-        <p>Testing:</p>
-        <?php 
-            $userIdentity=$this->zfcUserDisplayName();
-            echo $userIdentity;
-        ?>
-    </div>
-    <h1><?php echo sprintf($this->translate('Project <span class="zf-green">%s</span>'),$project->name); ?></h1>
+    <h1><?php echo sprintf($this->translate('Project <span class="zf-green">%s</span>'), $project->name); ?></h1>
 	<p><?php echo $project->description; ?></p>
-	<a href="ssh://root@intranet01.enrise.com">root @ intranet01.enrise.com</a>
-	
+	<ul>
+        <?php
+            foreach ($environments as $environment) {
+                echo '<li>' . $environment->name . '</li>';
+            }
+        ?>
+    </ul>
 </div>

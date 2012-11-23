@@ -14,7 +14,7 @@ class EnvironmentTable extends AbstractTableGateway
 		$this->adapter = $adapter;
 		
 		$this->resultSetPrototype = new ResultSet();
-		$this->resultSetPrototype->setArrayObjectPrototype(new environment());
+		$this->resultSetPrototype->setArrayObjectPrototype(new Environment());
 		
 		$this->initialize();
 	}
@@ -49,7 +49,7 @@ class EnvironmentTable extends AbstractTableGateway
      * returns rowset of all environments of that project
     */
     
-    public function fetchById($project_id)
+    public function fetchByProject($project_id)
     {
         /*$id  = (int) $id;
 

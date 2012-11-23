@@ -15,6 +15,7 @@ use Zend\View\Model\ViewModel;
 class ProjectController extends AbstractActionController
 {
 	protected $projectTable;
+	protected $environmentTable;
 
     public function indexAction()
     {
@@ -33,6 +34,7 @@ class ProjectController extends AbstractActionController
         
 		return new ViewModel(array(
 			'project' => $this->getProjectTable()->fetchProject($this->params()->fromRoute('id', 0)),
+			'environments' => $this->getEnvironmentTable()->fetchAll(),
 		));
     }
 	
@@ -43,5 +45,14 @@ class ProjectController extends AbstractActionController
 			$this->projectTable = $sm->get('Pacman\Module\ProjectTable');
 		}
 		return $this->projectTable;
+	}
+    
+	public function getEnvironmentTable()
+	{
+		if (!$this->environmentTable) {
+			$sm = $this->getServiceLocator();
+			$this->environmentTable = $sm->get('Pacman\Module\EnvironmentTable');
+		}
+		return $this->environmentTable;
 	}
 }
