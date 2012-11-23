@@ -1,14 +1,14 @@
 <?php
 namespace Pacman\Model;
 
-class Enviroment
+class Environment
 {
-    public $enviroment_id;
+    public $environment_id;
     public $name;
 
     public function exchangeArray($data)
     {
-        $this->enviroment_id     = (isset($data['enviroment_id'])) ? $data['enviroment_id'] : null;
+        $this->environment_id     = (isset($data['environment_id'])) ? $data['environment_id'] : null;
         $this->name  = (isset($data['name'])) ? $data['name'] : null;
     }
 }
