@@ -12,6 +12,3 @@ ALTER TABLE  `privileges` ADD INDEX (  `project_id` );
 ALTER TABLE  `privileges` ADD INDEX (  `enviroment_id` );
 
 ALTER TABLE user ADD adminlevel smallint(6) unsigned NOT NULL;
-
--- 12-10-2012 / Rob
-ALTER TABLE project ADD description text NOT NULL;
