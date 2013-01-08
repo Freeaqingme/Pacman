@@ -1,0 +1,348 @@
+#!/bin/bash
+VERSION="4.2"
+PROGNAME=$(basename $0)
+
+# Color Constants
+RED="0;31";  GREEN="0;32";  BROWN="0;33"; BLUE="0;34";  PURPLE="0;35";  CYAN="0;36";  GRAY="0;37";
+PINK="1;31"; LGREEN="1;32"; YELLOW="1;33" LBLUE="1;34"; MAGENTA="1;35"; LCYAN="1;37"; WHITE="1;37"
+
+# Default options
+DB_HOST=
+DB_DB=
+DB_USER=
+DB_PASS=
+OPT_REV_START=000
+OPT_REV_END=999
+OPT_CREATE_DB=0
+OPT_DROP_DB=0
+OPT_DRY_RUN=0
+OPT_IMPORT_TEST=0
+OPT_IMPORT_DATA=1
+OPT_IMPORT_SCHEMA=1
+OPT_PATCH_DIR=
+OPT_CONFIG=~/.patchdb.cfg
+OPT_SUMMARY=0
+
+##
+# Output functions with nice colors
+#
+function color_echo_nnl {
+    echo -en "\033[$1m"
+    echo -n "$2"
+    echo -en "\033[0;37m"
+}
+function color_echo {
+    echo -en "\033[$1m"
+    echo -n "$2"
+    echo -e "\033[0;37m"
+}
+
+##
+# Display file usage
+#
+function usage() {
+    echo "Usage: $0 [options]";
+    echo ""
+    echo "Options"
+    echo "  -d | --db <db>                  Database name"
+    echo "  -u | --user <user>              MySQL username"
+    echo "  -p | --pass <pass>              MySQL password"
+    echo "  -h | --host <host>              Hostname of the DB"
+    echo "  -s | --start <start_revision>   Revision to start patching"
+    echo "  -e | --end  <end_revision>      Revision to end patching"
+    echo "  -P | --patch-dir <dir>          Directory that contains the patchfiles (defaults to .)"
+    echo "  -C | --create-db                Creates the database if not exists"
+    echo "  -D | --drop-db                  Drops the database if exists"
+    echo "  -T | --import-test-data         Also import test data"
+    echo "  -S | --import-schema-only       Only import the schema, not the data"
+    echo "  --summary                       Display summary of patches"
+    echo "  --online-summary                Display summary of patches in the database"
+    echo "  --dry-run                       Only tells you want it does, but not actually runs it"
+    echo ""
+    echo "Options can also be set in a ~/.patchdb.cfg file."
+    echo "When username and/or password are not given, the patchdb script will ask them."
+}
+
+##
+# Creates the patch schema inside the database
+#
+function create_patch_schema {
+    local CREATE_HISTORY_SCHEMA=$(cat << 'EOS'
+CREATE TABLE IF NOT EXISTS `_patchhistory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file` varchar(255) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `patchtype` enum('schema','data','test') NOT NULL,
+  `version` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Internal patch history table. Do not edit manually.' AUTO_INCREMENT=1 ;
+EOS
+)
+    do_mysql "$CREATE_HISTORY_SCHEMA" ${DB_DB};
+}
+
+
+###
+# Executes MySQL query|queries or outputs the query when we are dry-running
+#
+function do_mysql {
+    if [ $OPT_DRY_RUN == 0 ] ; then
+        echo $1 | mysql -N ${MYSQL_CREDS} $2
+    else
+        color_echo $PINK " * Dryrun: $1"
+    fi
+}
+
+
+###
+# Ask user some information
+#
+function ask_user {
+    local username
+
+    read -p "MySQL Username: " username
+    echo $username
+}
+
+function ask_pass {
+    local password
+
+    stty -echo
+    read -p "MySQL Password: " password
+    stty echo
+    echo $password  # Return to caller
+}
+
+function ask_db {
+    local sdb
+
+    read -p "MySQL database: " db
+    echo $db
+}
+
+
+###
+# "complex" method to find the patch files in the CORRECT order.
+# First order by patch number,
+# second, order by "schema,data,test" directories
+# third, order by remark
+#
+function get_patchfiles {
+    dir="$1/"
+    files=`find ${dir} -type f -name \*.sql -print \
+      | sed -e 's|^'${dir}'||' \
+      | sed -e 's/^schema/1&/; s/^data/2&/; s/^test/3&/' \
+      | sort -t'-' -k2,2 -k1,1 -k3,3 \
+      | sed -e 's/^.//'
+      `
+    echo $files
+}
+
+
+
+echo "Database Patcher v${VERSION} - Copyright (C) Enrise BV"
+
+
+# Read configuration file (if available)
+if [ -f ${OPT_CONFIG} ] ; then 
+    source ${OPT_CONFIG}
+fi
+
+# Process commandline option
+SHORTOPTS="h:d:u:p:s:e:P:CDrTSi?"
+LONGOPTS="host:,db:,user:,pass:,start:,end:,patch-dir:,create-db,drop-db,dry-run,import-test-data,import-schema-only,summary,help"
+
+OPTS=$(getopt -s bash -o $SHORTOPTS --long $LONGOPTS -n "$PROGNAME" -- "$@")
+eval set -- "$OPTS"
+    
+while [ $# -gt 0 ] ; do
+    case $1 in
+        -h|--host               ) DB_HOST=$2;       shift; ;;
+        -d|--db                 ) DB_DB=$2;         shift; ;;
+        -u|--user               ) DB_USER=$2;       shift; ;;
+        -p|--pass               ) DB_PASS=$2;       shift; ;;
+        -s|--start              ) OPT_REV_START=$2; shift; ;;
+        -e|--end                ) OPT_REV_END=$2;   shift; ;;
+        -C|--create-db          ) OPT_CREATE_DB=1; ;;
+        -D|--drop-db            ) OPT_DROP_DB=1; OPT_CREATE_DB=1; ;;
+        -P|--patch-dir          ) OPT_PATCH_DIR=$2;  shift ;;
+        -T|--import-test-data   ) OPT_IMPORT_SCHEMA=1; OPT_IMPORT_DATA=1; OPT_IMPORT_TEST=1; ;;
+        -S|--import-schema-only ) OPT_IMPORT_SCHEMA=1; OPT_IMPORT_DATA=0; OPT_IMPORT_TEST=0; ;;
+        --summary               ) OPT_SUMMARY=1; ;;
+        --dry-run               ) OPT_DRY_RUN=1; ;;
+        --help                  ) usage; exit 1 ;;
+        --) break ;;
+        *)
+            echo "Internal Error: option processing error $1" 1>&2
+            exit 1;
+            ;;
+    esac
+    shift
+done
+
+
+if [ -z ${OPT_PATCH_DIR} ] ; then
+    color_echo $RED "* No patch directory supplied. Use the -P or --patch-dir option to provide a directory"
+    echo
+    exit 1;
+fi
+
+# Check if the patchdir conforms to our patch structure
+if [ ! -d ${OPT_PATCH_DIR}/schema ] || [ ! -d ${OPT_PATCH_DIR}/data ] || [ ! -d ${OPT_PATCH_DIR}/test ] ; then
+    color_echo $RED " * Patch directory ${OPT_PATCH_DIR} does not conform to the patch structure."
+    exit 1;
+fi
+
+
+# Display summary of found patches in correct order (plus info)
+if [ ${OPT_SUMMARY} == 1 ] ; then
+    echo "Summary of existing patch files: "
+
+    files=$(get_patchfiles $OPT_PATCH_DIR)
+    for filename in $files ; do
+        type=`echo $filename | cut -d'/' -f 1`
+        version=`echo $filename | cut -d'-' -f 2`
+        label=`printf "  %03s %-7s %-50s" $version $type $filename`
+
+        firstline=`head -n 1 $OPT_PATCH_DIR/$filename`
+        echo "  $label $firstline"
+    done
+    exit 0;
+fi
+
+
+
+# Ask user and password when they are not found
+if [ -z "$DB_USER" ] ; then
+  DB_USER=$(ask_user);
+fi
+
+if [ -z "$DB_PASS" ] ; then
+  DB_PASS=$(ask_pass);
+  echo   # print newline since ask_pass() doesn't
+fi
+
+# Ask db  when they not found
+if [ -z "$DB_DB" ] ; then 
+    DB_DB=$(ask_db);
+fi
+
+
+# Generate mysql login credentials
+MYSQL_CREDS="--user ${DB_USER} --password=${DB_PASS}"
+if [ -n "$DB_HOST" ] ; then
+    MYSQL_CREDS="${MYSQL_CREDS} --host ${DB_HOST}"
+fi
+
+# Verify connection
+echo "quit" | mysql -N ${MYSQL_CREDS}
+if [ $? != "0" ] ; then
+    color_echo $RED " * Error: cannot connect to the database"
+    exit 1;
+fi
+
+# Check if the database exists
+DB=`echo "SHOW DATABASES" | mysql -N ${MYSQL_CREDS} | grep "^${DB_DB}$"`
+if [ "$DB" != "" ] ; then
+    color_echo $YELLOW " * Database already exists."
+    
+    # Database exists
+    if [ "$OPT_DROP_DB" == 1 ] ; then
+        color_echo $YELLOW " * I'm going to drop the database because you asked me to..."
+        do_mysql "SET foreign_key_checks=0; DROP DATABASE $DB_DB;"
+    fi
+fi
+
+# It could be dropped (or not existing in the first place). Check again
+DB=`echo "SHOW DATABASES" | mysql -N ${MYSQL_CREDS} | grep "^${DB_DB}$"`
+if [ -z "$DB" ] ; then
+    # Database does not exists
+    color_echo $YELLOW " * Database does not exists."
+    if [ "$OPT_CREATE_DB" == 1 ] ; then
+        color_echo $YELLOW " * I'm going to create a new database.. whoohoo!"
+        do_mysql "CREATE DATABASE $DB_DB"
+    else
+        color_echo $RED " * Sorry. I'm not allowed to create it. Use the --create-db option."
+        exit;
+    fi
+fi
+
+
+# Check if the patch history table is available
+TABLE=`echo "SHOW TABLES" | mysql -N ${MYSQL_CREDS} ${DB_DB} | grep "^_patchhistory$"`
+if [ -z "$TABLE" ] ; then
+    # Create table
+    color_echo $YELLOW " * History table does not exists. Creating initial schema."
+    create_patch_schema 
+else
+    color_echo $GREEN " * History table exists. Good."
+fi
+
+# Fetch the latest patch revision in the database
+if [ -z ${OPT_REV_START} ] ; then
+    rev=`echo "SELECT MAX(version) FROM ${DB_DB}._patchhistory" | mysql -N ${MYSQL_CREDS} ${DB_DB} 2>/dev/null | grep -o '[[:digit:]]\+'`
+    if [ -z "$rev" ] ; then
+        color_echo $GREEN " * No patch information found in the database. Starting from revision 000"
+        OPT_REV_START=0
+    else
+        OPT_REV_START=`printf "%03d" ${rev}`
+        color_echo $GREEN " * Latest revision found in the db is ${OPT_REV_START}."
+        let OPT_REV_START=OPT_REV_START+1
+    fi
+fi
+
+# Format the start and end
+OPT_REV_START=`printf "%03d" ${OPT_REV_START}`
+OPT_REV_END=`printf "%03d" ${OPT_REV_END}`
+
+color_echo $GREEN " * Patching database from ${OPT_REV_START} to ${OPT_REV_END}"
+
+
+# Patch the database
+files=$(get_patchfiles $OPT_PATCH_DIR)
+for filename in $files ; do
+    type=`echo $filename | cut -d'/' -f 1`
+    version=`echo $filename | cut -d'-' -f 2`
+
+    if [[ $version < ${OPT_REV_START} ]] ; then
+        color_echo $PINK " * Skipping ${type} ${version} : not needed or wanted"
+        continue;
+    fi
+
+    if [[ "$type" == "schema" && OPT_IMPORT_SCHEMA -eq 0 ]] ; then
+        color_echo $PINK " * Skipping ${type} ${version} : not importing schema"
+        continue
+    fi
+    if [[ "$type" == "test" && OPT_IMPORT_TEST -eq 0 ]] ; then
+        color_echo $PINK " * Skipping ${type} ${version} : not importing test data"
+        continue
+    fi
+    if [[ "$type" == "data" && OPT_IMPORT_DATA -eq 0 ]] ; then
+        color_echo $PINK " * Skipping ${type} ${version} : not importing data"
+        continue
+    fi
+
+    if [[ -n ${OPT_REV_END} && $version > ${OPT_REV_END} ]] ; then
+        color_echo $PINK " * Skipping ${type} ${version} : not needed or wanted"
+        continue;
+    fi
+
+
+    if [ $OPT_DRY_RUN == 0 ] ; then
+        color_echo_nnl $GREEN " * Applying patch ${filename} : "
+
+        mysql -N ${MYSQL_CREDS} $DB_DB < ${OPT_PATCH_DIR}/${filename}
+        if [ $? -ne 0 ] ; then
+            color_echo $RED " * Looks like an error has occurred."
+            exit 1;
+        fi
+        do_mysql "INSERT INTO $DB_DB._patchhistory SET file=\"${filename}\", date=NOW(), patchtype=\"${type}\", version=\"${version}\""
+        echo "";
+    else
+        color_echo $YELLOW " * Dryrun: Applying patch ${filename}"
+    fi
+done
+
+# All done
+color_echo $LGREEN "All done. I hope everything worked out for you..."
+exit 0;
