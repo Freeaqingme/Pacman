@@ -22,6 +22,20 @@ return array(
                     ),
                 ),
             ),
+            'project' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/project[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pacman\Controller\Project',
+                        'action'     => 'list',
+                    ),
+                ),
+            ),
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
@@ -71,7 +85,8 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Pacman\Controller\Index' => 'Pacman\Controller\IndexController'
+            'Pacman\Controller\Index' => 'Pacman\Controller\IndexController',
+            'Pacman\Controller\Project' => 'Pacman\Controller\ProjectController',
         ),
     ),
     'view_manager' => array(
