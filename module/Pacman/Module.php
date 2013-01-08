@@ -9,9 +9,10 @@
 
 namespace Pacman;
 
+use Pacman\Model\Project\ProjectTable;
 use Zend\Mvc\ModuleRouteListener;
+use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
-use \Zend\Mvc\MvcEvent;
 
 class Module
 {
@@ -41,7 +42,6 @@ class Module
         );
     }
 
-
     public function redirectUnauthedUsersEvent(MvcEvent $e)
     {
         $matches      = $e->getRouteMatch();
@@ -69,5 +69,18 @@ class Module
         }
 
         return $response;
+    }
+
+    public function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'Pacman\Model\Project\ProjectTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ProjectTable($dbAdapter);
+                    return $table;
+                },
+            ),
+        );
     }
 }
