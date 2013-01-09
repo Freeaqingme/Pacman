@@ -9,29 +9,22 @@
 
 namespace Pacman\Model\Project;
 
+
 use Pacman\Model\Project\Project;
+use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Sql\Select;
-use Zend\Db\TableGateway\AbstractTableGateway;
-
-class ProjectTable extends AbstractTableGateway
+class ProjectTable
 {
     /**
-     * db table name
-     * @var string
+     * Table gateway
+     * @var TableGateway
      */
-    protected $table = 'project';
+    protected $tableGateway;
 
-    public function __construct(Adapter $adapter)
+    public function __construct(TableGateway $tableGateway)
     {
-        $this->adapter = $adapter;
-
-        $this->resultSetPrototype = new ResultSet();
-        $this->resultSetPrototype->setArrayObjectPrototype(new Project());
-
-        $this->initialize();
+        $this->tableGateway = $tableGateway;
     }
 
     /**
@@ -41,7 +34,7 @@ class ProjectTable extends AbstractTableGateway
      */
     public function fetchAll()
     {
-        $resultSet = $this->select();
+        $resultSet = $this->tableGateway->select();
         return $resultSet;
     }
 
@@ -52,11 +45,10 @@ class ProjectTable extends AbstractTableGateway
      */
     public function fetchLatest()
     {
-        $resultSet = $this->select(function (Select $select) {
-            $select->order('id DESC')->limit(5);
-        });
+        $select = $this->tableGateway->getSql()->select();
+        $select->order('id DESC')->limit(5);
 
-        return $resultSet;
+        return $this->tableGateway->selectWith($select);
     }
 
     /**
@@ -68,13 +60,10 @@ class ProjectTable extends AbstractTableGateway
     public function findProject($id)
     {
         $id  = (int) $id;
-
-        $rowset = $this->select(array(
+        $rowset = $this->tableGateway->select(array(
             'id' => $id,
         ));
-
         $row = $rowset->current();
-
         if (!$row) {
             throw new \Exception("Could not find project with ID $id");
         }
