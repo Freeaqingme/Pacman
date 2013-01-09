@@ -97,6 +97,10 @@ You can install using native git submodules:
 
     git clone git://github.com/Enrise/Pacman.git --recursive
 
+For database use:
+
+    dev/patchdb/patchdb -C -d {database} -p {password} -u {user} -P dev/database/ -h {host}
+
 ### Virtual Host
 
 Afterwards, set up a virtual host to point to the public/ directory of the
