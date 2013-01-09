@@ -32,9 +32,11 @@ class ProjectController extends AbstractActionController
      */
     public function viewAction()
     {
-        $id = $this->params()->fromRoute('id', 0);
-        $project = $this->getProjectTable()->findProject($id);
-        if (!$project) {
+        $id = (int) $this->params()->fromRoute('id', 0);
+
+        try {
+            $project = $this->getProjectTable()->findProject($id);
+        } catch (\Exception $e) {
             $this->getResponse()->setStatusCode(404);
             return;
         }
