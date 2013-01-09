@@ -30,6 +30,12 @@ class Project
     public $description;
 
     /**
+     * Project url
+     * @var String
+     */
+    public $url;
+
+    /**
      * Populate Entity Properties
      * @param array $data
      */
@@ -38,5 +44,6 @@ class Project
         $this->id = (isset($data['id'])) ? $data['id'] : null;
         $this->name = (isset($data['name'])) ? $data['name'] : null;
         $this->description = (isset($data['description'])) ? $data['description'] : null;
+        $this->url = (isset($data['url'])) ? $data['url'] : null;
     }
 }
