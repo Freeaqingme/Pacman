@@ -1,21 +1,32 @@
-<div class="hero-unit">
-    <h1><?php echo sprintf($this->translate('%sPacman V2%s Projects'), '<span class="zf-green">', '</span>') ?></h1>
-    <p><?php echo $this->translate('An overview of all the projects') ?></p>
-</div>
+<h1><?php echo $this->translate('Projects'); ?></h1>
+<p><?php echo $this->translate('An overview of all projects.'); ?></p>
 
-<div class="row">
-
-    <div class="span4">
-        <p>
-            <ul>
-                <?php
-                    foreach ($projects as $project) {
-                        echo '<li><a href="'.$this->url('project',array('action'=>'view','id'=>$project->id)).'">'.$this->escapeHtml($project->name).'</a></li>';
-                    }
-                ?>
-
-            </ul>
-        </p>
-    </div>
-
-</div>
+<table class="table">
+    <tr>
+        <th><?php echo $this->translate('Number'); ?></th>
+        <th><?php echo $this->translate('Name'); ?></th>
+        <th><?php echo $this->translate('Url'); ?></th>
+        <th>&nbsp;</th>
+    </tr>
+    <?php foreach ($projects as $project) : ?>
+        <tr>
+            <td><?php echo $project->id; ?></td>
+            <td>
+                <a href="<?php echo $this->url('project',array('action'=>'view','id'=>$project->id)); ?>">
+                    <?php echo $this->escapeHtml($project->name); ?>
+                </a>
+            </td>
+            <td>
+                <a href="<?php echo $this->escapeHtml($project->url); ?>" target="_blank">
+                    <?php echo $this->escapeHtml($project->url); ?>
+                </a>
+            </td>
+            <td>
+                <a href="<?php echo $this->url('project',
+                    array('action'=>'edit', 'id' => $project->id)); ?>">Edit</a>
+                <a href="<?php echo $this->url('project',
+                    array('action'=>'delete', 'id' => $project->id)); ?>">Delete</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
