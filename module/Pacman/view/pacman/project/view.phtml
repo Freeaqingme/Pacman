@@ -1,5 +1,5 @@
 <div class="hero-unit">
-    <h1><?php echo sprintf($this->translate('Project <span class="zf-green">%s</span>'), $project->name); ?></h1>
-    <p><?php echo $project->description; ?></p>
-    <p><a href="<?php echo $project->url; ?>" target="_blank"><?php echo $project->url; ?></a></p>
+    <h1><?php echo sprintf($this->translate('Project <span class="zf-green">%s</span>'), $this->escapeHtml($project->name)); ?></h1>
+    <p><?php echo $this->escapeHtml($project->description); ?></p>
+    <p><a href="<?php echo $this->escapeHtml($project->url); ?>" target="_blank"><?php echo $this->escapeHtml($project->url); ?></a></p>
 </div>
