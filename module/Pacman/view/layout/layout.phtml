@@ -28,10 +28,7 @@
                     </a>
                     <a class="brand" href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Skeleton Application') ?></a>
                     <div class="nav-collapse">
-                        <ul class="nav">
-                            <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
-                            <li class=""><a href="<?php echo $this->url('category') ?>"><?php echo $this->translate('Categories') ?></a></li>
-                        </ul>
+                        <?php echo $this->navigation('navigation')->menu()->setUlClass('nav'); ?>
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
