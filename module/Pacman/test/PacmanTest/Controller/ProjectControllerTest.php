@@ -3,7 +3,6 @@
  * Pacman (https://github.com/Enrise/Pacman)
  * @link https://github.com/Enrise/Pacman for the canonical source repository
  * @copyright Copyright (c) 2012 Enrise (www.enrise.com)
- * @author Rob Quist ()
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
