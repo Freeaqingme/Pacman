@@ -23,9 +23,9 @@
             </td>
             <td>
                 <a href="<?php echo $this->url('project',
-                    array('action'=>'edit', 'id' => $project->id)); ?>">Edit</a>
+                    array('action'=>'edit', 'id' => $project->id)); ?>"><?php echo $this->translate('Edit'); ?></a>
                 <a href="<?php echo $this->url('project',
-                    array('action'=>'delete', 'id' => $project->id)); ?>">Delete</a>
+                    array('action'=>'delete', 'id' => $project->id)); ?>"><?php echo $this->translate('Delete'); ?></a>
             </td>
         </tr>
     <?php endforeach; ?>

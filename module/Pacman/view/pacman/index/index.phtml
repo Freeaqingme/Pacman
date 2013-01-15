@@ -11,7 +11,7 @@
             <ul>
                 <?php
                     foreach ($projects as $project) {
-                        echo '<li><a href="'.$this->url('project',array('action'=>'view','id'=>$project->id)).'">'.$this->escapeHtml($project->name).'</a></li>';
+                        echo '<li><a href="' . $this->url('project',array('action'=>'view','id'=>$project->id)) . '">' . $this->escapeHtml($project->name) . '</a></li>';
                     }
                 ?>
             </ul>
