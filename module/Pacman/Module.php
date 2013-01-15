@@ -80,6 +80,10 @@ class Module
                     $tableGateway = Module::getTableGateway($sm, 'project', 'Model\Project\Entity');
                     return new Model\Project\Table($tableGateway);
                 },
+                'Model\Category\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'category', 'Model\Category\Entity');
+                    return new Model\Category\Table($tableGateway);
+                },
             ),
         );
     }
