@@ -9,6 +9,8 @@
 
 namespace Pacman;
 
+use Pacman\Model\Project\ProjectTable;
+use Pacman\Model\Category\CategoryTable;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
@@ -90,7 +92,6 @@ class Module
 
     static public function getTableGateway($sm, $tableName, $entityName)
     {
-        $entityName = 'Pacman\\' . $entityName;
         $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
         $resultSetPrototype = new ResultSet();
         $resultSetPrototype->setArrayObjectPrototype(new $entityName());
