@@ -15,9 +15,9 @@
             </td>
             <td>
                 <a href="<?php echo $this->url('category',
-                    array('action'=>'edit', 'id' => $category->id)); ?>">Edit</a>
+                    array('action'=>'edit', 'id' => $category->id)); ?>"><?php echo $this->translate('Edit'); ?></a>
                 <a href="<?php echo $this->url('category',
-                    array('action'=>'delete', 'id' => $category->id)); ?>">Delete</a>
+                    array('action'=>'delete', 'id' => $category->id)); ?>"><?php echo $this->translate('Delete'); ?></a>
             </td>
         </tr>
     <?php endforeach; ?>
