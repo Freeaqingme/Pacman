@@ -1,0 +1,24 @@
+<h1><?php echo $this->translate('Categories'); ?></h1>
+<p><?php echo $this->translate('An overview of all categories.'); ?></p>
+
+<table class="table">
+    <tr>
+        <th><?php echo $this->translate('Name'); ?></th>
+        <th>&nbsp;</th>
+    </tr>
+    <?php foreach ($categories as $category) : ?>
+        <tr>
+            <td>
+                <a href="<?php echo $this->url('category',array('action'=>'view','id'=>$category->id)); ?>">
+                    <?php echo $this->escapeHtml($category->name); ?>
+                </a>
+            </td>
+            <td>
+                <a href="<?php echo $this->url('category',
+                    array('action'=>'edit', 'id' => $category->id)); ?>">Edit</a>
+                <a href="<?php echo $this->url('category',
+                    array('action'=>'delete', 'id' => $category->id)); ?>">Delete</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
