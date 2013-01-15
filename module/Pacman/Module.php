@@ -9,8 +9,6 @@
 
 namespace Pacman;
 
-use Pacman\Model\Project\ProjectTable;
-use Pacman\Model\Category\CategoryTable;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
