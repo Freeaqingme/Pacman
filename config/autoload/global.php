@@ -26,6 +26,10 @@ return array(
                  'label' => 'Categories',
                  'route' => 'category',
              ),
+             array(
+                 'label' => 'Environments',
+                 'route' => 'environment',
+             ),
          ),
      ),
 );
