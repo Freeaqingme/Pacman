@@ -9,6 +9,9 @@
 
 namespace Pacman;
 
+use Pacman\Model\Project\ProjectTable;
+use Pacman\Model\Category\CategoryTable;
+use Pacman\Model\Environment\EnvironmentTable;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
@@ -83,6 +86,16 @@ class Module
                 'Model\Category\Table' => function($sm) {
                     $tableGateway = Module::getTableGateway($sm, 'category', 'Model\Category\Entity');
                     return new Model\Category\Table($tableGateway);
+                },
+                'Pacman\Model\Category\CategoryTable' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'category', 'Pacman\Model\Category\Category');
+                    $table = new CategoryTable($tableGateway);
+                    return $table;
+                },
+                'Pacman\Model\Environment\EnvironmentTable' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'environment', 'Pacman\Model\Environment\Environment');
+                    $table = new EnvironmentTable($tableGateway);
+                    return $table;
                 },
             ),
         );
