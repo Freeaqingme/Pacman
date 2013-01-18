@@ -8,12 +8,14 @@
 
 namespace PacmanTest\Model\Project;
 
-use Pacman\Model\Project\ProjectTable;
-use Pacman\Model\Project\Project;
+use Pacman\Model\Project\Table;
+use Pacman\Model\Project\Entity;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Select;
 use PHPUnit_Framework_TestCase;
 
-class ProjectTableTest extends PHPUnit_Framework_TestCase
+class TableTest extends PHPUnit_Framework_TestCase
 {
     /**
      * test if fetchAll() returns a ResultSet object.
@@ -25,26 +27,55 @@ class ProjectTableTest extends PHPUnit_Framework_TestCase
                                            array('select'), array(), '', false);
         $mockTableGateway->expects($this->once())
                          ->method('select')
-                         ->with()
                          ->will($this->returnValue($resultSet));
 
-        $projectTable = new ProjectTable($mockTableGateway);
+        $projectTable = new Table($mockTableGateway);
 
         $this->assertSame($resultSet, $projectTable->fetchAll());
     }
 
     /**
+     * test if fetchLatest($limit = 5) returns a ResultSet object.
+     */
+    public function testFetchLatestReturnsResultset()
+    {
+        $resultSet = new ResultSet();
+
+        $mockSql = $this->getMock('Zend\Db\Sql\Sql',array('select'),
+                                  array(), '', false);
+        $mockSql->expects($this->once())
+                         ->method('select')
+                         ->will($this->returnValue(new Select()));
+
+        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
+                                           array('getSql','selectWith'), array(), '', false);
+        $mockTableGateway->expects($this->once())
+                         ->method('getSql')
+                         ->will($this->returnValue($mockSql));
+        $mockTableGateway->expects($this->once())
+                         ->method('selectWith')
+                         ->will($this->returnValue($resultSet));
+
+        $projectTable = new Table($mockTableGateway);
+
+        $this->assertSame($resultSet, $projectTable->fetchLatest());
+    }
+
+    /**
      * test if findProject($id) returns a Project
      */
-    public function testCanRetrieveAnProjectByItsId()
+    public function testCanRetrieveProjectByItsId()
     {
-        $project = new Project();
-        $project->exchangeArray(array('id'     => 123,
-                                    'artist' => 'The Military Wives',
-                                    'title'  => 'In My Dreams'));
+        $project = new Entity();
+        $project->exchangeArray(array(
+            'id' => 123,
+            'name' => 'Project X',
+            'description' => 'Test description',
+            'url' => 'http://www.test.net',
+        ));
 
         $resultSet = new ResultSet();
-        $resultSet->setArrayObjectPrototype(new Project());
+        $resultSet->setArrayObjectPrototype(new Entity());
         $resultSet->initialize(array($project));
 
         $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway', array('select'), array(), '', false);
@@ -53,19 +84,19 @@ class ProjectTableTest extends PHPUnit_Framework_TestCase
                          ->with(array('id' => 123))
                          ->will($this->returnValue($resultSet));
 
-        $projectTable = new ProjectTable($mockTableGateway);
+        $projectTable = new Table($mockTableGateway);
 
         $this->assertSame($project, $projectTable->findProject(123));
     }
 
     /**
-     * Test if we will encounter an exception
+     * Test if findProject($id) returns null
      * when we’re trying to retrieve a Project that doesn’t exist.
      */
-    public function testExceptionIsThrownWhenGettingNonexistentProject()
+    public function testCannotRetrieveProjectByItsId()
     {
         $resultSet = new ResultSet();
-        $resultSet->setArrayObjectPrototype(new Project());
+        $resultSet->setArrayObjectPrototype(new Entity());
         $resultSet->initialize(array());
 
         $row_id = 123;
@@ -76,19 +107,8 @@ class ProjectTableTest extends PHPUnit_Framework_TestCase
                          ->with(array('id' => $row_id))
                          ->will($this->returnValue($resultSet));
 
-        $projectTable = new ProjectTable($mockTableGateway);
+        $projectTable = new Table($mockTableGateway);
 
-        try
-        {
-            $projectTable->findProject($row_id);
-        }
-        catch (\Exception $e)
-        {
-
-            $this->assertSame("Could not find project with ID $row_id", $e->getMessage());
-            return;
-        }
-
-        $this->fail('Expected exception was not thrown');
+        $this->assertNull($projectTable->findProject($row_id));
     }
 }

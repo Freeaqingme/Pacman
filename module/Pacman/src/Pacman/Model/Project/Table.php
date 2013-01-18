@@ -8,23 +8,10 @@
 
 namespace Pacman\Model\Project;
 
+use Pacman\Model\Table as TableAbstract;
 
-use Pacman\Model\Project\Project;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql;
-
-class ProjectTable
+class Table extends TableAbstract
 {
-    /**
-     * Table gateway
-     * @var TableGateway
-     */
-    protected $tableGateway;
-
-    public function __construct(TableGateway $tableGateway)
-    {
-        $this->tableGateway = $tableGateway;
-    }
 
     /**
      * Fetch all
@@ -38,14 +25,15 @@ class ProjectTable
     }
 
     /**
-     * Fetch latest 5
+     * Fetch latest
      *
      * @return ResultSet
      */
-    public function fetchLatest()
+    public function fetchLatest($limit = 5)
     {
+        $limit  = (int) $limit;
         $select = $this->tableGateway->getSql()->select();
-        $select->order('id DESC')->limit(5);
+        $select->order('id DESC')->limit($limit);
 
         return $this->tableGateway->selectWith($select);
     }
@@ -62,11 +50,6 @@ class ProjectTable
         $rowset = $this->tableGateway->select(array(
             'id' => $id,
         ));
-        $row = $rowset->current();
-        if (!$row) {
-            throw new \Exception("Could not find project with ID $id");
-        }
-
-        return $row;
+        return $rowset->current();
     }
 }
