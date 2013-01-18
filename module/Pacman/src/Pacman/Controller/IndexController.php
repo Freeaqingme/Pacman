@@ -20,7 +20,7 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $sm = $this->getServiceLocator();
-        $projectTable = $sm->get('Pacman\Model\Project\ProjectTable');
+        $projectTable = $sm->get('Model\Project\Table');
 
         return new ViewModel(array(
             'projects' => $projectTable->fetchLatest(),

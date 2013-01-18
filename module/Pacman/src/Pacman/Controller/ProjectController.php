@@ -8,14 +8,11 @@
 
 namespace Pacman\Controller;
 
-use Pacman\Model\Project\ProjectTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class ProjectController extends AbstractActionController
 {
-    protected $projectTable;
-
     /**
      * list of projects
      */
@@ -31,11 +28,10 @@ class ProjectController extends AbstractActionController
      */
     public function viewAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int) $this->params()->fromRoute('id');
 
-        try {
-            $project = $this->getProjectTable()->findProject($id);
-        } catch (\Exception $e) {
+        $project = $this->getProjectTable()->findProject($id);
+        if (!$project) {
             $this->getResponse()->setStatusCode(404);
             return;
         }
@@ -48,14 +44,10 @@ class ProjectController extends AbstractActionController
     /**
      * get Project TableGateway
      *
-     * @return ProjectTable
+     * @return Model\Project\Table
      */
     public function getProjectTable()
     {
-        if (!$this->projectTable) {
-            $sm = $this->getServiceLocator();
-            $this->projectTable = $sm->get('Pacman\Model\Project\ProjectTable');
-        }
-        return $this->projectTable;
+        return $this->getServiceLocator()->get('Model\Project\Table');
     }
 }
