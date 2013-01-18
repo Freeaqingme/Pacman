@@ -11,7 +11,7 @@ DB_HOST=
 DB_DB=
 DB_USER=
 DB_PASS=
-OPT_REV_START=000
+OPT_REV_START=
 OPT_REV_END=999
 OPT_CREATE_DB=0
 OPT_DROP_DB=0
@@ -22,6 +22,7 @@ OPT_IMPORT_SCHEMA=1
 OPT_PATCH_DIR=
 OPT_CONFIG=~/.patchdb.cfg
 OPT_SUMMARY=0
+DB_INITQUERY="SET SESSION sql_mode = 'STRICT_ALL_TABLES,ANSI', NAMES utf8;"
 
 ##
 # Output functions with nice colors
@@ -144,7 +145,7 @@ echo "Database Patcher v${VERSION} - Copyright (C) Enrise BV"
 
 
 # Read configuration file (if available)
-if [ -f ${OPT_CONFIG} ] ; then 
+if [ -f ${OPT_CONFIG} ] ; then
     source ${OPT_CONFIG}
 fi
 
@@ -154,7 +155,7 @@ LONGOPTS="host:,db:,user:,pass:,start:,end:,patch-dir:,create-db,drop-db,dry-run
 
 OPTS=$(getopt -s bash -o $SHORTOPTS --long $LONGOPTS -n "$PROGNAME" -- "$@")
 eval set -- "$OPTS"
-    
+
 while [ $# -gt 0 ] ; do
     case $1 in
         -h|--host               ) DB_HOST=$2;       shift; ;;
@@ -211,7 +212,6 @@ if [ ${OPT_SUMMARY} == 1 ] ; then
 fi
 
 
-
 # Ask user and password when they are not found
 if [ -z "$DB_USER" ] ; then
   DB_USER=$(ask_user);
@@ -223,7 +223,7 @@ if [ -z "$DB_PASS" ] ; then
 fi
 
 # Ask db  when they not found
-if [ -z "$DB_DB" ] ; then 
+if [ -z "$DB_DB" ] ; then
     DB_DB=$(ask_db);
 fi
 
@@ -245,7 +245,7 @@ fi
 DB=`echo "SHOW DATABASES" | mysql -N ${MYSQL_CREDS} | grep "^${DB_DB}$"`
 if [ "$DB" != "" ] ; then
     color_echo $YELLOW " * Database already exists."
-    
+
     # Database exists
     if [ "$OPT_DROP_DB" == 1 ] ; then
         color_echo $YELLOW " * I'm going to drop the database because you asked me to..."
@@ -263,7 +263,7 @@ if [ -z "$DB" ] ; then
         do_mysql "CREATE DATABASE $DB_DB"
     else
         color_echo $RED " * Sorry. I'm not allowed to create it. Use the --create-db option."
-        exit;
+        exit 1;
     fi
 fi
 
@@ -273,10 +273,11 @@ TABLE=`echo "SHOW TABLES" | mysql -N ${MYSQL_CREDS} ${DB_DB} | grep "^_patchhist
 if [ -z "$TABLE" ] ; then
     # Create table
     color_echo $YELLOW " * History table does not exists. Creating initial schema."
-    create_patch_schema 
+    create_patch_schema
 else
     color_echo $GREEN " * History table exists. Good."
 fi
+
 
 # Fetch the latest patch revision in the database
 if [ -z ${OPT_REV_START} ] ; then
@@ -285,8 +286,9 @@ if [ -z ${OPT_REV_START} ] ; then
         color_echo $GREEN " * No patch information found in the database. Starting from revision 000"
         OPT_REV_START=0
     else
-        OPT_REV_START=`printf "%03d" ${rev}`
-        color_echo $GREEN " * Latest revision found in the db is ${OPT_REV_START}."
+        OPT_REV_START=${rev}
+
+        color_echo $GREEN " * Latest revision found in the db is `printf "%03d" ${OPT_REV_START}`."
         let OPT_REV_START=OPT_REV_START+1
     fi
 fi
@@ -327,12 +329,15 @@ for filename in $files ; do
         continue;
     fi
 
-
     if [ $OPT_DRY_RUN == 0 ] ; then
         color_echo_nnl $GREEN " * Applying patch ${filename} : "
 
+        sed -i "1i ${DB_INITQUERY}" ${OPT_PATCH_DIR}/${filename}
+
         mysql -N ${MYSQL_CREDS} $DB_DB < ${OPT_PATCH_DIR}/${filename}
-        if [ $? -ne 0 ] ; then
+        MYSQLEXITCODE=$?
+        sed -i "1d" ${OPT_PATCH_DIR}/${filename}
+        if [ $MYSQLEXITCODE -ne 0 ] ; then
             color_echo $RED " * Looks like an error has occurred."
             exit 1;
         fi
@@ -346,3 +351,4 @@ done
 # All done
 color_echo $LGREEN "All done. I hope everything worked out for you..."
 exit 0;
+
