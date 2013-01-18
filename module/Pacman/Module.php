@@ -9,8 +9,6 @@
 
 namespace Pacman;
 
-use Pacman\Model\Project\Project;
-use Pacman\Model\Project\ProjectTable;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
@@ -78,18 +76,20 @@ class Module
     {
         return array(
             'factories' => array(
-                'Pacman\Model\Project\ProjectTable' => function($sm) {
-                    $tableGateway = $sm->get('ProjectTableGateway');
-                    $table = new ProjectTable($tableGateway);
-                    return $table;
-                },
-                'ProjectTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Project());
-                    return new TableGateway('project', $dbAdapter, null, $resultSetPrototype);
+                'Model\Project\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'project', 'Model\Project\Entity');
+                    return new Model\Project\Table($tableGateway);
                 },
             ),
         );
+    }
+
+    static public function getTableGateway($sm, $tableName, $entityName)
+    {
+        $entityName = 'Pacman\\' . $entityName;
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $resultSetPrototype = new ResultSet();
+        $resultSetPrototype->setArrayObjectPrototype(new $entityName());
+        return new TableGateway($tableName, $dbAdapter, null, $resultSetPrototype);
     }
 }
