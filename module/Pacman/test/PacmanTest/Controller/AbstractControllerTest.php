@@ -26,7 +26,7 @@ abstract class AbstractControllerTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $serviceManager = Bootstrap::getServiceManager();
+        $serviceManager = clone Bootstrap::getServiceManager();
         $this->request    = new Request();
         $this->event      = new MvcEvent();
         $config = $serviceManager->get('Config');

@@ -32,7 +32,7 @@ class ProjectControllerTest extends AbstractControllerTest
     public function testGetProjectTableReturnsAnInstanceOfProjectTable()
     {
         $this->assertInstanceOf(
-            'Pacman\Model\Project\ProjectTable',
+            'Pacman\Model\Project\Table',
             $this->controller->getProjectTable()
         );
     }
@@ -46,12 +46,47 @@ class ProjectControllerTest extends AbstractControllerTest
     }
 
     /**
+     * Test if List action returns correct value
+     */
+    public function testListActionCorrectReturnValue()
+    {
+        $returnValue = $this->controller->listAction();
+
+        // Check for a ViewModel to be returned
+        $this->assertInstanceOf('Zend\View\Model\ViewModel', $returnValue);
+
+        // Test the parameters contained in the View model
+        $viewModelVars = $returnValue->getVariables();
+        $this->assertCount(1, $viewModelVars);
+        $this->assertArrayHasKey('projects', $viewModelVars);
+        $this->assertInstanceOf('Zend\Db\ResultSet\ResultSet', $viewModelVars['projects']);
+    }
+
+    /**
      * Test if View action can be accessed
      */
     public function testViewActionCanBeAccessed()
     {
         $this->routeMatch->setParam('id', '1');
         $this->assertActionCanBeAccessed('view');
+    }
+
+    /**
+     * Test if View action returns correct value
+     */
+    public function testViewActionCorrectReturnValue()
+    {
+        $this->routeMatch->setParam('id', '1');
+        $returnValue = $this->controller->viewAction();
+
+        // Check for a ViewModel to be returned
+        $this->assertInstanceOf('Zend\View\Model\ViewModel', $returnValue);
+
+        // Test the parameters contained in the View model
+        $viewModelVars = $returnValue->getVariables();
+        $this->assertCount(1, $viewModelVars);
+        $this->assertArrayHasKey('project', $viewModelVars);
+        $this->assertInstanceOf('Pacman\Model\Project\Entity', $viewModelVars['project']);
     }
 
     /**
