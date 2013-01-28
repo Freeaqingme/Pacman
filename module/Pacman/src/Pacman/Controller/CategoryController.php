@@ -8,14 +8,12 @@
 
 namespace Pacman\Controller;
 
-use Pacman\Model\Category\CategoryTable;
+use Pacman\Model\Category\Table;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class CategoryController extends AbstractActionController
 {
-    protected $categoryTable;
-
     /**
      * list of categories
      */
@@ -31,11 +29,10 @@ class CategoryController extends AbstractActionController
      */
     public function viewAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int) $this->params()->fromRoute('id');
 
-        try {
-            $category = $this->getCategoryTable()->findCategory($id);
-        } catch (\Exception $e) {
+        $category = $this->getCategoryTable()->findCategory($id);
+        if (!$category) {
             $this->getResponse()->setStatusCode(404);
             return;
         }
@@ -48,14 +45,10 @@ class CategoryController extends AbstractActionController
     /**
      * get Category TableGateway
      *
-     * @return CategoryTable
+     * @return Model\Category\Table
      */
     public function getCategoryTable()
     {
-        if (!$this->categoryTable) {
-            $sm = $this->getServiceLocator();
-            $this->categoryTable = $sm->get('Pacman\Model\Category\CategoryTable');
-        }
-        return $this->categoryTable;
+        return $this->getServiceLocator()->get('Model\Category\Table');
     }
 }
