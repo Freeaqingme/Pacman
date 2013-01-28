@@ -8,17 +8,17 @@
 
 namespace PacmanTest\Model\Category;
 
-use Pacman\Model\Category\Category;
+use Pacman\Model\Category\Entity;
 use PHPUnit_Framework_Testcase;
 
-class CategoryTest extends PHPUnit_Framework_Testcase
+class EntityTest extends PHPUnit_Framework_Testcase
 {
     /**
      * test Category initinal state
      */
     public function testCategoryInitialState()
     {
-        $category = new Category();
+        $category = new Entity();
 
         $this->assertNull($category->id, '"id" should be NULL');
         $this->assertNull($category->name, '"name" should be NULL');
@@ -29,7 +29,7 @@ class CategoryTest extends PHPUnit_Framework_Testcase
      */
     public function testExchangeArraySetsPropertiesCorrectly()
     {
-        $category = new Category();
+        $category = new Entity();
 
         $data = array('id' => 1,
                       'name' => 'MySQL',
@@ -39,24 +39,5 @@ class CategoryTest extends PHPUnit_Framework_Testcase
 
         $this->assertSame($data['id'], $category->id, '"id" was not set correctly');
         $this->assertSame($data['name'], $category->name, '"name" was not set correctly');
-    }
-
-    /**
-     * test if exchangeArray() defaults the properties correctly
-     */
-    public function testExchangeArraySetsPropertiesToNull()
-    {
-        $category = new Category();
-
-        $data = array('id' => 1,
-                      'name' => 'MySQL',
-                     );
-
-        $category->exchangeArray($data);
-
-        $category->exchangeArray(array());
-
-        $this->assertNull($category->id, '"id" should have defaulted to null');
-        $this->assertNull($category->name, '"name" should have defaulted to null');
     }
 }

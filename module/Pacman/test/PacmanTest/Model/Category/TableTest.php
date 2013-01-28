@@ -8,12 +8,12 @@
 
 namespace PacmanTest\Model\Category;
 
-use Pacman\Model\Category\CategoryTable;
-use Pacman\Model\Category\Category;
+use Pacman\Model\Category\Table;
+use Pacman\Model\Category\Entity;
 use Zend\Db\ResultSet\ResultSet;
 use PHPUnit_Framework_TestCase;
 
-class CategoryTableTest extends PHPUnit_Framework_TestCase
+class TableTest extends PHPUnit_Framework_TestCase
 {
     /**
      * test if fetchAll() returns a ResultSet object.
@@ -25,10 +25,9 @@ class CategoryTableTest extends PHPUnit_Framework_TestCase
                                            array('select'), array(), '', false);
         $mockTableGateway->expects($this->once())
                          ->method('select')
-                         ->with()
                          ->will($this->returnValue($resultSet));
 
-        $categoryTable = new CategoryTable($mockTableGateway);
+        $categoryTable = new Table($mockTableGateway);
 
         $this->assertSame($resultSet, $categoryTable->fetchAll());
     }
@@ -38,57 +37,48 @@ class CategoryTableTest extends PHPUnit_Framework_TestCase
      */
     public function testCanRetrieveAnCategoryByItsId()
     {
-        $category = new Category();
+        $category = new Entity();
         $category->exchangeArray(array('id'     => 123,
                                        'name' => 'MySQL',
                                  ));
 
         $resultSet = new ResultSet();
-        $resultSet->setArrayObjectPrototype(new Category());
+        $resultSet->setArrayObjectPrototype(new Entity());
         $resultSet->initialize(array($category));
 
-        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway', array('select'), array(), '', false);
+        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
+                                            array('select'),array(), '', false);
         $mockTableGateway->expects($this->once())
                          ->method('select')
                          ->with(array('id' => 123))
                          ->will($this->returnValue($resultSet));
 
-        $categoryTable = new CategoryTable($mockTableGateway);
+        $categoryTable = new Table($mockTableGateway);
 
         $this->assertSame($category, $categoryTable->findCategory(123));
     }
 
     /**
-     * Test if we will encounter an exception
-     * when we’re trying to retrieve a Category that doesn’t exist.
+     * Test if findCategory($id) returns null
+     * when we’re trying to retrieve a Project that doesn’t exist.
      */
-    public function testExceptionIsThrownWhenGettingNonexistentCategory()
+    public function testCannotRetrieveCategoryByItsId()
     {
         $resultSet = new ResultSet();
-        $resultSet->setArrayObjectPrototype(new Category());
+        $resultSet->setArrayObjectPrototype(new Entity());
         $resultSet->initialize(array());
 
         $row_id = 123;
 
-        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway', array('select'), array(), '', false);
+        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
+                                            array('select'), array(), '', false);
         $mockTableGateway->expects($this->once())
                          ->method('select')
                          ->with(array('id' => $row_id))
                          ->will($this->returnValue($resultSet));
 
-        $categoryTable = new CategoryTable($mockTableGateway);
+        $categoryTable = new Table($mockTableGateway);
 
-        try
-        {
-            $categoryTable->findCategory($row_id);
-        }
-        catch (\Exception $e)
-        {
-
-            $this->assertSame("Could not find category with ID $row_id", $e->getMessage());
-            return;
-        }
-
-        $this->fail('Expected exception was not thrown');
+        $this->assertNull($categoryTable->findCategory($row_id));
     }
 }

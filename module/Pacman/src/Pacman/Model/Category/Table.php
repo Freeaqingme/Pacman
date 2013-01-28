@@ -8,22 +8,10 @@
 
 namespace Pacman\Model\Category;
 
-use Pacman\Model\Category\Category;
-use Zend\Db\TableGateway\TableGateway;
+use Pacman\Model\Table as TableAbstract;
 
-class CategoryTable
+class Table extends TableAbstract
 {
-    /**
-     * Table gateway
-     * @var TableGateway
-     */
-    protected $tableGateway;
-
-    public function __construct(TableGateway $tableGateway)
-    {
-        $this->tableGateway = $tableGateway;
-    }
-
     /**
      * Fetch all
      *
@@ -47,11 +35,6 @@ class CategoryTable
         $rowset = $this->tableGateway->select(array(
             'id' => $id,
         ));
-        $row = $rowset->current();
-        if (!$row) {
-            throw new \Exception("Could not find category with ID $id");
-        }
-
-        return $row;
+        return $rowset->current();
     }
 }
