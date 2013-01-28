@@ -32,7 +32,7 @@ class CategoryControllerTest extends AbstractControllerTest
     public function testGetCategoryTableReturnsAnInstanceOfCategoryTable()
     {
         $this->assertInstanceOf(
-            'Pacman\Model\Category\CategoryTable',
+            'Pacman\Model\Category\Table',
             $this->controller->getCategoryTable()
         );
     }
