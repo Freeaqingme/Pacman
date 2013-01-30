@@ -12,7 +12,6 @@ use Pacman\Model\Table as TableAbstract;
 
 class Table extends TableAbstract
 {
-
     /**
      * Fetch all
      *

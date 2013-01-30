@@ -8,7 +8,6 @@
 
 namespace Pacman\Controller;
 
-use Pacman\Model\Category\Table;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 

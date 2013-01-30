@@ -11,6 +11,7 @@ namespace PacmanTest\Controller;
 use Pacman\Controller\CategoryController;
 use PacmanTest\Controller\AbstractControllerTest;
 use Zend\Mvc\Router\RouteMatch;
+use Zend\Db\ResultSet\ResultSet;
 
 class CategoryControllerTest extends AbstractControllerTest
 {
@@ -31,6 +32,24 @@ class CategoryControllerTest extends AbstractControllerTest
      */
     public function testGetCategoryTableReturnsAnInstanceOfCategoryTable()
     {
+        //mock the model
+        /*
+        $resultSet        = new ResultSet();
+        $mockCategoryTable = $this->getMock('Pacman\Model\Category\Table',
+                                           array('fetchAll','findCategory'), array(), '', false);
+        $mockCategoryTable->expects($this->once())
+                         ->method('fetchAll')
+                         ->will($this->returnValue($resultSet));
+        $mockCategoryTable->expects($this->once())
+                         ->method('findCategory')
+                         ->will($this->returnValue(new \Pacman\Model\Category\Entity()));
+
+        $sm = $this->controller->getServiceLocator();
+        //overwrite categoryTable service entry
+        $sm->setAllowOverride(true);
+        $sm->setService('Model\Category\Table',$mockCategoryTable);
+        */
+
         $this->assertInstanceOf(
             'Pacman\Model\Category\Table',
             $this->controller->getCategoryTable()
@@ -42,6 +61,24 @@ class CategoryControllerTest extends AbstractControllerTest
      */
     public function testListActionCanBeAccessed()
     {
+        //mock the model
+        /*
+        $resultSet = new ResultSet();
+        $mockCategoryTable = $this->getMock('Pacman\Model\Category\Table',
+                                           array('fetchAll','findCategory'), array(), '', false);
+        $mockCategoryTable->expects($this->once())
+                         ->method('fetchAll')
+                         ->will($this->returnValue($resultSet));
+        $mockCategoryTable->expects($this->once())
+                         ->method('findCategory')
+                         ->will($this->returnValue(new \Pacman\Model\Category\Entity()));
+
+        $sm = $this->controller->getServiceLocator();
+        //overwrite projectTable service entry
+        $sm->setAllowOverride(true);
+        $sm->setService('Model\Category\Table',$mockCategoryTable);
+        */
+        
         $this->assertActionCanBeAccessed('list');
     }
 
