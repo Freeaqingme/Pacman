@@ -11,7 +11,6 @@ namespace PacmanTest\Controller;
 use Pacman\Controller\CategoryController;
 use PacmanTest\Controller\AbstractControllerTest;
 use Zend\Mvc\Router\RouteMatch;
-use Zend\Db\ResultSet\ResultSet;
 
 class CategoryControllerTest extends AbstractControllerTest
 {

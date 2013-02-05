@@ -47,7 +47,7 @@ class TableTest extends PHPUnit_Framework_TestCase
         $resultSet->initialize(array($category));
 
         $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
-                                            array('select'),array(), '', false);
+                                            array('select'), array(), '', false);
         $mockTableGateway->expects($this->once())
                          ->method('select')
                          ->with(array('id' => 123))

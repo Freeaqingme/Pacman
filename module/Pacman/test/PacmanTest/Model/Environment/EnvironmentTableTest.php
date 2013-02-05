@@ -8,12 +8,12 @@
 
 namespace PacmanTest\Model\Environment;
 
-use Pacman\Model\Environment\EnvironmentTable;
-use Pacman\Model\Environment\Environment;
+use Pacman\Model\Environment\Table;
+use Pacman\Model\Environment\Entity;
 use Zend\Db\ResultSet\ResultSet;
 use PHPUnit_Framework_TestCase;
 
-class EnvironmentTableTest extends PHPUnit_Framework_TestCase
+class TableTest extends PHPUnit_Framework_TestCase
 {
     /**
      * test if fetchAll() returns a ResultSet object.
@@ -25,10 +25,9 @@ class EnvironmentTableTest extends PHPUnit_Framework_TestCase
                                            array('select'), array(), '', false);
         $mockTableGateway->expects($this->once())
                          ->method('select')
-                         ->with()
                          ->will($this->returnValue($resultSet));
 
-        $environmentTable = new EnvironmentTable($mockTableGateway);
+        $environmentTable = new Table($mockTableGateway);
 
         $this->assertSame($resultSet, $environmentTable->fetchAll());
     }
@@ -38,22 +37,23 @@ class EnvironmentTableTest extends PHPUnit_Framework_TestCase
      */
     public function testCanRetrieveAnEnvironmentByItsId()
     {
-        $environment = new Environment();
-        $environment->exchangeArray(array('id'     => 123,
-                                       'name' => 'Production',
+        $environment = new Entity();
+        $environment->exchangeArray(array('id' => 123,
+                                          'name' => 'Production',
                                  ));
 
         $resultSet = new ResultSet();
-        $resultSet->setArrayObjectPrototype(new Environment());
+        $resultSet->setArrayObjectPrototype(new Entity());
         $resultSet->initialize(array($environment));
 
-        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway', array('select'), array(), '', false);
+        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
+                                            array('select'), array(), '', false);
         $mockTableGateway->expects($this->once())
                          ->method('select')
                          ->with(array('id' => 123))
                          ->will($this->returnValue($resultSet));
 
-        $environmentTable = new EnvironmentTable($mockTableGateway);
+        $environmentTable = new Table($mockTableGateway);
 
         $this->assertSame($environment, $environmentTable->findEnvironment(123));
     }
@@ -62,33 +62,24 @@ class EnvironmentTableTest extends PHPUnit_Framework_TestCase
      * Test if we will encounter an exception
      * when we’re trying to retrieve a Environment that doesn’t exist.
      */
-    public function testExceptionIsThrownWhenGettingNonexistentEnvironment()
+    public function testCannotRetrieveEnvironmentByItsId()
     {
         $resultSet = new ResultSet();
-        $resultSet->setArrayObjectPrototype(new Environment());
+        $resultSet->setArrayObjectPrototype(new Entity());
         $resultSet->initialize(array());
 
         $row_id = 123;
 
-        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway', array('select'), array(), '', false);
+        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
+                                            array('select'), array(), '', false);
         $mockTableGateway->expects($this->once())
                          ->method('select')
                          ->with(array('id' => $row_id))
                          ->will($this->returnValue($resultSet));
 
-        $environmentTable = new EnvironmentTable($mockTableGateway);
+        $environmentTable = new Table($mockTableGateway);
 
-        try
-        {
-            $environmentTable->findEnvironment($row_id);
-        }
-        catch (\Exception $e)
-        {
-
-            $this->assertSame("Could not find environment with ID $row_id", $e->getMessage());
-            return;
-        }
-
-        $this->fail('Expected exception was not thrown');
+        $this->assertNull($environmentTable->findEnvironment($row_id));
     }
 }
+

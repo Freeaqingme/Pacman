@@ -32,7 +32,7 @@ class EnvironmentControllerTest extends AbstractControllerTest
     public function testGetEnvironmentTableReturnsAnInstanceOfEnvironmentTable()
     {
         $this->assertInstanceOf(
-            'Pacman\Model\Environment\EnvironmentTable',
+            'Pacman\Model\Environment\Table',
             $this->controller->getEnvironmentTable()
         );
     }

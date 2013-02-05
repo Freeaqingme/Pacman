@@ -8,14 +8,11 @@
 
 namespace Pacman\Controller;
 
-use Pacman\Model\Environment\EnvironmentTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class EnvironmentController extends AbstractActionController
 {
-    protected $environmentTable;
-
     /**
      * list of environments
      */
@@ -31,11 +28,10 @@ class EnvironmentController extends AbstractActionController
      */
     public function viewAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int) $this->params()->fromRoute('id');
 
-        try {
-            $environment = $this->getEnvironmentTable()->findEnvironment($id);
-        } catch (\Exception $e) {
+        $environment = $this->getEnvironmentTable()->findEnvironment($id);
+        if (!$environment) {
             $this->getResponse()->setStatusCode(404);
             return;
         }
@@ -48,14 +44,10 @@ class EnvironmentController extends AbstractActionController
     /**
      * get Environment TableGateway
      *
-     * @return EnvironmentTable
+     * @return Model\Environment\Table
      */
     public function getEnvironmentTable()
     {
-        if (!$this->environmentTable) {
-            $sm = $this->getServiceLocator();
-            $this->environmentTable = $sm->get('Pacman\Model\Environment\EnvironmentTable');
-        }
-        return $this->environmentTable;
+        return $this->getServiceLocator()->get('Model\Environment\Table');
     }
 }
