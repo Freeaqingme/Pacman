@@ -111,4 +111,22 @@ class TableTest extends PHPUnit_Framework_TestCase
 
         $this->assertNull($projectTable->findProject($row_id));
     }
+
+    /**
+     * test if fetchByCustomerId() returns a ResultSet object.
+     */
+    public function testfetchByCustomerIdReturnsResultset()
+    {
+        $resultSet        = new ResultSet();
+        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
+                                           array('select'), array(), '', false);
+        $mockTableGateway->expects($this->once())
+                         ->method('select')
+                         ->with(array('customer_id' => 123))
+                         ->will($this->returnValue($resultSet));
+
+        $projectTable = new Table($mockTableGateway);
+
+        $this->assertSame($resultSet, $projectTable->fetchByCustomerId(123));
+    }
 }

@@ -87,6 +87,10 @@ class Module
                     $tableGateway = Module::getTableGateway($sm, 'environment', 'Model\Environment\Entity');
                     return new Model\Environment\Table($tableGateway);
                 },
+                'Model\Customer\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'customer', 'Model\Customer\Entity');
+                    return new Model\Customer\Table($tableGateway);
+                },
             ),
         );
     }

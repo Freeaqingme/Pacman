@@ -6,21 +6,18 @@
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Pacman\Model\Project;
+namespace Pacman\Model\Customer;
 
 use Pacman\Model\Entity as EntityAbstract;
 
 class Entity extends EntityAbstract
 {
     /**
-     * Project properties
+     * Customer properties
      * @var array
      */
     protected $_properties = array(
             'id' => null,
             'name' => null,
-            'description' => null,
-            'url' => null,
-            'customer_id' => null,
     );
 }

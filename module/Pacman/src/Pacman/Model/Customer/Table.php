@@ -6,7 +6,7 @@
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Pacman\Model\Project;
+namespace Pacman\Model\Customer;
 
 use Pacman\Model\Table as TableAbstract;
 
@@ -24,40 +24,12 @@ class Table extends TableAbstract
     }
 
     /**
-     * Fetch latest
-     *
-     * @return ResultSet
-     */
-    public function fetchLatest($limit = 5)
-    {
-        $limit  = (int) $limit;
-        $select = $this->tableGateway->getSql()->select();
-        $select->order('id DESC')->limit($limit);
-
-        return $this->tableGateway->selectWith($select);
-    }
-
-    /**
-     * Fetch by customer id
-     *
-     * @return ResultSet
-     */
-    public function fetchByCustomerId($customerId)
-    {
-        $customerId  = (int) $customerId;
-
-        return $this->tableGateway->select(array(
-            'customer_id' => $customerId,
-        ));
-    }
-
-    /**
-     * Find project by id
+     * Find Customer by id
      *
      * @param int $id
      * @return Entity
      */
-    public function findProject($id)
+    public function findCustomer($id)
     {
         $id  = (int) $id;
         $rowset = $this->tableGateway->select(array(
