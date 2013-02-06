@@ -1,5 +1,5 @@
-INSERT INTO `environment`
-(`id`,`name`)
+INSERT INTO environment
+(id,name)
 values
 (1,'Development'),
 (2,'Test'),
