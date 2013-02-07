@@ -6,7 +6,7 @@
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Pacman\Model\Environment;
+namespace Pacman\Model\Credential;
 
 use Pacman\Model\Table as TableAbstract;
 
@@ -24,35 +24,36 @@ class Table extends TableAbstract
     }
 
     /**
-     * Find environment by id
+     * Find credential by id
      *
      * @param int $id
      * @return Entity
      */
-    public function findEnvironment($id)
+    public function findCredential($id)
     {
         $id  = (int) $id;
         $rowset = $this->tableGateway->select(array(
             'id' => $id,
         ));
+
         return $rowset->current();
     }
 
     /**
-     * Fetch Environments by credential
+     * Fetch passwords by Project and Category
      *
-     * @param int $credentialId
-     * @return Entity
+     * @param int $projectId
+     * @param int $categoryId
+     * @return ResultSet
      */
-    public function fetchByCredential($credentialId)
+    public function fetchByProjectAndCategory($projectId,$categoryId)
     {
-        $credentialId = (int) $credentialId;
-        $select = $this->tableGateway->getSql()->select()
-            ->join('credential_environment', "environment.id = credential_environment.environment_id",array())
-            ->where("credential_environment.credential_id = $credentialId")
-            ->order('name ASC');
+        $projectId = (int) $projectId;
+        $categoryId = (int) $categoryId;
 
-        $resultSet = $this->tableGateway->selectWith($select);
-        return $resultSet;
+        return $this->tableGateway->select(array(
+                'project_id' => $projectId,
+                'category_id' => $categoryId,
+            ));
     }
 }

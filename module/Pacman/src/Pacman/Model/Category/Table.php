@@ -37,4 +37,23 @@ class Table extends TableAbstract
         ));
         return $rowset->current();
     }
+
+    /*
+     * fetch categories by project
+     *
+     * @param int $projectId
+     * @return ResultSet
+     */
+    public function fetchByProject($projectId)
+    {
+        $projectId = (int) $projectId;
+        $select = $this->tableGateway->getSql()->select()
+            ->join('credential', "category.id = credential.category_id",array())
+            ->where("credential.project_id = $projectId")
+            ->group("id")
+            ->order('name ASC');
+
+        $resultSet = $this->tableGateway->selectWith($select);
+        return $resultSet;
+    }
 }

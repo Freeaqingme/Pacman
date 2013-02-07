@@ -91,6 +91,10 @@ class Module
                     $tableGateway = Module::getTableGateway($sm, 'customer', 'Model\Customer\Entity');
                     return new Model\Customer\Table($tableGateway);
                 },
+                'Model\Credential\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'credential', 'Model\Credential\Entity');
+                    return new Model\Credential\Table($tableGateway);
+                },
             ),
         );
     }

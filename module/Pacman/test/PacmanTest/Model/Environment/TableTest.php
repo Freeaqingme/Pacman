@@ -81,5 +81,43 @@ class TableTest extends PHPUnit_Framework_TestCase
 
         $this->assertNull($environmentTable->findEnvironment($row_id));
     }
+
+    /**
+     * test if fetchByCredential() returns a ResultSet object.
+     */
+    public function testfetchByCredentialReturnsResultset()
+    {
+        $resultSet = new ResultSet();
+
+        $mockSelect = $this->getMock('Zend\Db\Sql\Select',array('join','where','order'), array(), '', false);
+        $mockSelect->expects($this->once())
+                   ->method('join') 
+                   ->will($this->returnValue($mockSelect));
+        $mockSelect->expects($this->once())
+                   ->method('where') 
+                   ->will($this->returnValue($mockSelect));
+        $mockSelect->expects($this->once())
+                   ->method('order') 
+                   ->will($this->returnValue($mockSelect));
+
+        $mockSql = $this->getMock('Zend\Db\Sql\Sql',array('select'), array(), '', false);
+        $mockSql->expects($this->once())
+                ->method('select')
+                ->will($this->returnValue($mockSelect));
+
+        $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
+                                           array('getSql','selectWith'), array(), '', false);
+        $mockTableGateway->expects($this->once())
+                         ->method('getSql') 
+                         ->will($this->returnValue($mockSql));
+        $mockTableGateway->expects($this->once())
+                         ->method('selectWith')
+                         ->with($mockSelect)
+                         ->will($this->returnValue($resultSet));
+
+        $environmentTable = new Table($mockTableGateway);
+
+        $this->assertSame($resultSet, $environmentTable->fetchByCredential(123));
+    }
 }
 
