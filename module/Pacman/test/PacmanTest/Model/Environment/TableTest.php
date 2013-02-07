@@ -91,13 +91,13 @@ class TableTest extends PHPUnit_Framework_TestCase
 
         $mockSelect = $this->getMock('Zend\Db\Sql\Select',array('join','where','order'), array(), '', false);
         $mockSelect->expects($this->once())
-                   ->method('join') 
+                   ->method('join')
                    ->will($this->returnValue($mockSelect));
         $mockSelect->expects($this->once())
-                   ->method('where') 
+                   ->method('where')
                    ->will($this->returnValue($mockSelect));
         $mockSelect->expects($this->once())
-                   ->method('order') 
+                   ->method('order')
                    ->will($this->returnValue($mockSelect));
 
         $mockSql = $this->getMock('Zend\Db\Sql\Sql',array('select'), array(), '', false);
@@ -108,7 +108,7 @@ class TableTest extends PHPUnit_Framework_TestCase
         $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
                                            array('getSql','selectWith'), array(), '', false);
         $mockTableGateway->expects($this->once())
-                         ->method('getSql') 
+                         ->method('getSql')
                          ->will($this->returnValue($mockSql));
         $mockTableGateway->expects($this->once())
                          ->method('selectWith')
