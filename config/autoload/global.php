@@ -19,6 +19,10 @@ return array(
                  'route' => 'home',
              ),
              array(
+                 'label' => 'Customers',
+                 'route' => 'customer',
+             ),
+             array(
                  'label' => 'Projects',
                  'route' => 'project',
              ),
