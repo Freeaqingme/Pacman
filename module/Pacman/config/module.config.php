@@ -64,6 +64,20 @@ return array(
                     ),
                 ),
             ),
+            'customer' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/customer[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pacman\Controller\Customer',
+                        'action'     => 'list',
+                    ),
+                ),
+            ),
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
@@ -118,6 +132,7 @@ return array(
             'Pacman\Controller\Project' => 'Pacman\Controller\ProjectController',
             'Pacman\Controller\Category' => 'Pacman\Controller\CategoryController',
             'Pacman\Controller\Environment' => 'Pacman\Controller\EnvironmentController',
+            'Pacman\Controller\Customer' => 'Pacman\Controller\CustomerController',
         ),
     ),
     'view_manager' => array(
