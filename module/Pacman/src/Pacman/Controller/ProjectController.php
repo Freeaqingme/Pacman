@@ -38,6 +38,9 @@ class ProjectController extends AbstractActionController
 
         return new ViewModel(array(
             'project' => $project,
+            'categories' => $this->getCategoryTable()->fetchByProject($project->id),
+            'credentialTable' => $this->getCredentialTable(),
+            'environmentTable' => $this->getEnvironmentTable(),
         ));
     }
 
@@ -49,5 +52,34 @@ class ProjectController extends AbstractActionController
     public function getProjectTable()
     {
         return $this->getServiceLocator()->get('Model\Project\Table');
+    }
+
+    /**
+     * get Category TableGateway
+     *
+     * @return Model\Category\Table
+     */
+    public function getCategoryTable()
+    {
+        return $this->getServiceLocator()->get('Model\Category\Table');
+    }
+
+    /**
+     * get Credential TableGateway
+     *
+     * @return Model\Credential\Table
+     */
+    public function getCredentialTable()
+    {
+        return $this->getServiceLocator()->get('Model\Credential\Table');
+    }
+    /**
+     * get Environment TableGateway
+     *
+     * @return Model\Environment\Table
+     */
+    public function getEnvironmentTable()
+    {
+        return $this->getServiceLocator()->get('Model\Environment\Table');
     }
 }
