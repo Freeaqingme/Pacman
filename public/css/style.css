@@ -35,3 +35,8 @@ div.container a.brand {
     margin-left: 0;
     padding: 8px 20px 12px 40px;
 }
+
+#project-accordion .credential-container {
+    background: #EEE; margin-bottom: 5px; border-radius: 3px; margin-bottom: 15px; padding: 15px;
+}
+#project-accordion .credential-container .options { text-align: right; }
