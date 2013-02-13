@@ -20,7 +20,7 @@
             <div id="collapse<?php echo $i; ?>" class="accordion-body collapse <?php if ($i==1) { echo 'in'; } ; ?>">
                 <div class="accordion-inner">
                     <?php foreach ($credentials as $credential) : ?>
-                        <?php $environments = $environmentTable->fetchByCredential($credential->id) ?>
+                        <?php $environments = $environmentTable->fetchByCredential($credential->id); ?>
                         <div class="credential-container">
                             <div class="row-fluid">
                                 <div class="span2"><?php echo $this->translate('Url'); ?> : </div>
