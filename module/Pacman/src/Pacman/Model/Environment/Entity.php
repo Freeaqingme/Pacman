@@ -13,7 +13,7 @@ use Pacman\Model\Entity as EntityAbstract;
 class Entity extends EntityAbstract
 {
     /**
-     * Category properties
+     * Environment properties
      * @var array
      */
     protected $_properties = array(
