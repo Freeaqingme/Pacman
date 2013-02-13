@@ -95,6 +95,10 @@ class Module
                     $tableGateway = Module::getTableGateway($sm, 'credential', 'Model\Credential\Entity');
                     return new Model\Credential\Table($tableGateway);
                 },
+                'Model\Cluster\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'cluster', 'Model\Cluster\Entity');
+                    return new Model\Cluster\Table($tableGateway);
+                },
             ),
         );
     }
