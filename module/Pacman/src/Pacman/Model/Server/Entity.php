@@ -6,25 +6,19 @@
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Pacman\Model\Credential;
+namespace Pacman\Model\Server;
 
 use Pacman\Model\Entity as EntityAbstract;
 
 class Entity extends EntityAbstract
 {
     /**
-     * Credential properties
+     * Server properties
      * @var array
      */
     protected $_properties = array(
-            'id' => null,
-            'project_id' => null,
-            'category_id' => null,
-            'cluster_id' => null,
-            'server_id' => null,
-            'notes' => null,
-            'url' => null,
-            'username' => null,
-            'password' => null,
+        'id' => null,
+        'name' => null,
+        'cluster_id' => null,
     );
 }

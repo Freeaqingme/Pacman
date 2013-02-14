@@ -99,6 +99,10 @@ class Module
                     $tableGateway = Module::getTableGateway($sm, 'cluster', 'Model\Cluster\Entity');
                     return new Model\Cluster\Table($tableGateway);
                 },
+                'Model\Server\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'server', 'Model\Server\Entity');
+                    return new Model\Server\Table($tableGateway);
+                },
             ),
         );
     }

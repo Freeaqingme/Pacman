@@ -24,6 +24,7 @@ class EntityTest extends PHPUnit_Framework_Testcase
         $this->assertNull($entity->project_id, '"project_id" should be NULL');
         $this->assertNull($entity->category_id, '"category_id" should be NULL');
         $this->assertNull($entity->cluster_id, '"cluster_id" should be NULL');
+        $this->assertNull($entity->server_id, '"server_id" should be NULL');
         $this->assertNull($entity->notes, '"notes" should be NULL');
         $this->assertNull($entity->url, '"url" should be NULL');
         $this->assertNull($entity->username, '"username" should be NULL');
@@ -42,6 +43,7 @@ class EntityTest extends PHPUnit_Framework_Testcase
             'project_id' => 1,
             'category_id' => 2,
             'cluster_id' => 3,
+            'server_id' => 4,
             'notes' => 'Just for uploading to import/customerfiles',
             'url' => 'ftp://testdomain.com',
             'username' => 'testuser',
@@ -54,6 +56,7 @@ class EntityTest extends PHPUnit_Framework_Testcase
         $this->assertSame($data['project_id'], $entity->projectId, '"project_id" was not set correctly');
         $this->assertSame($data['category_id'], $entity->categoryId, '"category_id" was not set correctly');
         $this->assertSame($data['cluster_id'], $entity->clusterId, '"cluster_id" was not set correctly');
+        $this->assertSame($data['server_id'], $entity->serverId, '"server_id" was not set correctly');
         $this->assertSame($data['notes'], $entity->notes, '"notes" was not set correctly');
         $this->assertSame($data['url'], $entity->url, '"description" was not set correctly');
         $this->assertSame($data['username'], $entity->username, '"username" was not set correctly');
