@@ -44,6 +44,7 @@ class TableTest extends PHPUnit_Framework_TestCase
             'id' => 123,
             'project_id' => 1,
             'category_id' => 2,
+            'cluster_id' => 3,
             'notes' => 'Just for uploading to import/customerfiles',
             'url' => 'ftp://testdomain.com',
             'username' => 'testuser',
