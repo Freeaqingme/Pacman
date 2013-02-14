@@ -22,6 +22,7 @@
                     <?php foreach ($credentials as $credential) :
                             $environments = $environmentTable->fetchByCredential($credential->id);
                             $cluster = $clusterTable->findCluster($credential->clusterId);
+                            $server = $serverTable->findServer($credential->serverId);
                         ?>
                         <div class="credential-container">
                             <div class="row-fluid">
@@ -50,6 +51,12 @@
                                 <div class="row-fluid">
                                     <div class="span2"><?php echo $this->translate('Cluster'); ?> : </div>
                                     <div class="span6"><?php echo $cluster->name; ?></div>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($server) : ?>
+                                <div class="row-fluid">
+                                    <div class="span2"><?php echo $this->translate('Server'); ?> : </div>
+                                    <div class="span6"><?php echo $server->name; ?></div>
                                 </div>
                             <?php endif; ?>
                             <div class="row-fluid">

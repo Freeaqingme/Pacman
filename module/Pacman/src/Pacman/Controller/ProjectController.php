@@ -42,6 +42,7 @@ class ProjectController extends AbstractActionController
             'credentialTable' => $this->getCredentialTable(),
             'environmentTable' => $this->getEnvironmentTable(),
             'clusterTable' => $this->getClusterTable(),
+            'serverTable' => $this->getServerTable(),
         ));
     }
 
@@ -93,5 +94,15 @@ class ProjectController extends AbstractActionController
     public function getClusterTable()
     {
         return $this->getServiceLocator()->get('Model\Cluster\Table');
+    }
+
+    /**
+     * get Server TableGateway
+     *
+     * @return Model\Server\Table
+     */
+    public function getServerTable()
+    {
+        return $this->getServiceLocator()->get('Model\Server\Table');
     }
 }
