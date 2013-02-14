@@ -84,17 +84,18 @@ class ProjectControllerTest extends AbstractControllerTest
 
         // Test the parameters contained in the View model
         $viewModelVars = $returnValue->getVariables();
-        $this->assertCount(4, $viewModelVars);
+        $this->assertCount(5, $viewModelVars);
 
         $this->assertArrayHasKey('project', $viewModelVars);
         $this->assertArrayHasKey('categories', $viewModelVars);
         $this->assertArrayHasKey('credentialTable', $viewModelVars);
         $this->assertArrayHasKey('environmentTable', $viewModelVars);
+        $this->assertArrayHasKey('clusterTable', $viewModelVars);
 
         $this->assertInstanceOf('Pacman\Model\Project\Entity', $viewModelVars['project']);
         $this->assertInstanceOf('Zend\Db\ResultSet\ResultSet', $viewModelVars['categories']);
         $this->assertInstanceOf('Pacman\Model\Credential\Table', $viewModelVars['credentialTable']);
-        $this->assertInstanceOf('Pacman\Model\Environment\Table', $viewModelVars['environmentTable']);
+        $this->assertInstanceOf('Pacman\Model\Cluster\Table', $viewModelVars['clusterTable']);
     }
 
     /**

@@ -19,8 +19,10 @@
             </div>
             <div id="collapse<?php echo $i; ?>" class="accordion-body collapse <?php if ($i==1) { echo 'in'; } ; ?>">
                 <div class="accordion-inner">
-                    <?php foreach ($credentials as $credential) : ?>
-                        <?php $environments = $environmentTable->fetchByCredential($credential->id); ?>
+                    <?php foreach ($credentials as $credential) :
+                            $environments = $environmentTable->fetchByCredential($credential->id);
+                            $cluster = $clusterTable->findCluster($credential->clusterId);
+                        ?>
                         <div class="credential-container">
                             <div class="row-fluid">
                                 <div class="span2"><?php echo $this->translate('Url'); ?> : </div>
@@ -44,6 +46,12 @@
                                 <div class="span2"><?php echo $this->translate('Password'); ?> : </div>
                                 <div class="span6"><?php echo $credential->password; ?></div>
                             </div>
+                            <?php if ($cluster) : ?>
+                                <div class="row-fluid">
+                                    <div class="span2"><?php echo $this->translate('Cluster'); ?> : </div>
+                                    <div class="span6"><?php echo $cluster->name; ?></div>
+                                </div>
+                            <?php endif; ?>
                             <div class="row-fluid">
                                 <div class="span2"><?php echo $this->translate('Environments'); ?> : </div>
                                 <div class="span6">

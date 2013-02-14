@@ -41,6 +41,7 @@ class ProjectController extends AbstractActionController
             'categories' => $this->getCategoryTable()->fetchByProject($project->id),
             'credentialTable' => $this->getCredentialTable(),
             'environmentTable' => $this->getEnvironmentTable(),
+            'clusterTable' => $this->getClusterTable(),
         ));
     }
 
@@ -73,6 +74,7 @@ class ProjectController extends AbstractActionController
     {
         return $this->getServiceLocator()->get('Model\Credential\Table');
     }
+
     /**
      * get Environment TableGateway
      *
@@ -81,5 +83,15 @@ class ProjectController extends AbstractActionController
     public function getEnvironmentTable()
     {
         return $this->getServiceLocator()->get('Model\Environment\Table');
+    }
+
+    /**
+     * get Cluster TableGateway
+     *
+     * @return Model\Cluster\Table
+     */
+    public function getClusterTable()
+    {
+        return $this->getServiceLocator()->get('Model\Cluster\Table');
     }
 }
