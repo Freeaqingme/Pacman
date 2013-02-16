@@ -9,11 +9,6 @@
 
 
 return array(
-        'controller_plugins' => array(
-                'invokables' => array(
-                        'acceptantViewModelSelector' => 'Pacman\Mvc\Controller\Plugin\AcceptantViewModelSelector',
-                        )
-                        ),
 
     'router' => array(
         'routes' => array(
@@ -24,6 +19,20 @@ return array(
                     'defaults' => array(
                         'controller' => 'Pacman\Controller\Index',
                         'action'     => 'index',
+                    ),
+                ),
+            ),
+            'project' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/project[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pacman\Controller\Project',
+                        'action'     => 'list',
                     ),
                 ),
             ),
@@ -76,7 +85,8 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Pacman\Controller\Index' => 'Pacman\Controller\IndexController'
+            'Pacman\Controller\Index' => 'Pacman\Controller\IndexController',
+            'Pacman\Controller\Project' => 'Pacman\Controller\ProjectController',
         ),
     ),
     'view_manager' => array(

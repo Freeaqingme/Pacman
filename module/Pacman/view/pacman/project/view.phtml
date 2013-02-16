@@ -1,0 +1,7 @@
+<h1>
+    <a href="<?php echo $this->url('project') ?>"><?php echo $this->translate('Projects')?></a>
+    <span>></span>
+    <span><?php echo $this->escapeHtml($project->name); ?></span>
+</h1>
+<p><?php echo $this->escapeHtml($project->description); ?></p>
+<p><a href="<?php echo $this->escapeHtml($project->url); ?>" target="_blank"><?php echo $this->escapeHtml($project->url); ?></a></p>

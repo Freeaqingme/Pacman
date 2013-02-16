@@ -10,8 +10,10 @@
 namespace Pacman;
 
 use Zend\Mvc\ModuleRouteListener;
+use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
-use \Zend\Mvc\MvcEvent;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\TableGateway\TableGateway;
 
 class Module
 {
@@ -41,7 +43,6 @@ class Module
         );
     }
 
-
     public function redirectUnauthedUsersEvent(MvcEvent $e)
     {
         $matches      = $e->getRouteMatch();
@@ -69,5 +70,26 @@ class Module
         }
 
         return $response;
+    }
+
+    public function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'Model\Project\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'project', 'Model\Project\Entity');
+                    return new Model\Project\Table($tableGateway);
+                },
+            ),
+        );
+    }
+
+    static public function getTableGateway($sm, $tableName, $entityName)
+    {
+        $entityName = 'Pacman\\' . $entityName;
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $resultSetPrototype = new ResultSet();
+        $resultSetPrototype->setArrayObjectPrototype(new $entityName());
+        return new TableGateway($tableName, $dbAdapter, null, $resultSetPrototype);
     }
 }
