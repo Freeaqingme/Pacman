@@ -1,0 +1,362 @@
+###################################################################################
+###  Quickstart developing at PacMan 2                                          ###
+###                                                                             ###
+###  Dit document bevat een omschrijving om snel op gang te komen               ###
+###  met doorontwikkelen op PacMan 2. Er vanuit gaande dat men                  ###
+###  bekend is met de basis beginselen van Zend FrameWork 2.                    ###
+###                                                                             ###
+###  Het doornemen van de ZF2 useguide quickstart zal voldoende moeten zijn.    ###
+###  http://framework.zend.com/manual/2.0/en/user-guide/overview.html           ###
+###                                                                             ###
+###################################################################################
+
+########
+# App structuur
+PC2 is opgezet als een module op ZF2.
+DB Patches:     dev/database
+Models:         module/Pacman/src/Pacman/Models
+Controllers:    module/Pacman/src/Pacman/Controllers
+Unittests:      Pacman/module/Pacman/test/PacmanTest
+Views:          module/Pacman/view/
+Configs:        module/Pacman/Module.php
+                - module/Pacman/config/module.config.php
+
+########
+1.1) DB patches aanmaken in db dirs
+    create en alter table queries in dev/database/schema
+    data queries in dev/database/data
+    Hanteer een oplopende nummerieke volgorde voor het doorlopen van de patches.
+        bv: patch-003-project.sql
+
+1.2) Run patchdb
+    dev/patchdb/patchdb -C -d {database} -p {password} -u {user} -P dev/database/ -h {host}
+
+############################################################################################
+2) Model aanmaken
+2.1) Model dir aanmaken in de Models dir
+         /module/Pacman/src/Pacman/Model/Project/
+
+######
+2.2) Entity.php aanmaken en extenden EntityAbstract en $_properties toevoegen.
+
+        namespace Pacman\Model\Project;
+
+        use Pacman\Model\Entity as EntityAbstract;
+
+        class Entity extends EntityAbstract
+        {
+            /**
+             * Project properties
+             * @var array
+             */
+            protected $_properties = array(
+                    'id' => null,
+                    'name' => null,
+                    'description' => null,
+                    'url' => null,
+                    'customer_id' => null,
+            );
+        }
+
+########
+2.3) Table.php aanmaken en extenden van TableAbstract en functies toevoegen
+
+        namespace Pacman\Model\Project;
+
+        use Pacman\Model\Table as TableAbstract;
+
+        class Table extends TableAbstract
+        {
+            /**
+             * Fetch all
+             *
+             * @return ResultSet
+             */
+            public function fetchAll()
+            {
+                $resultSet = $this->tableGateway->select();
+                return $resultSet;
+            }
+        }
+
+#########
+2.4) Models aan service config toevoegen (module/Pacman/Module.php)
+
+        public function getServiceConfig()
+        {
+            return array(
+                'factories' => array(
+                    'Model\Project\Table' => function($sm) {
+                        $tableGateway = Module::getTableGateway(
+                            $sm,
+                            'project',
+                            'Model\Project\Entity'
+                        );
+                        return new Model\Project\Table($tableGateway);
+                    },
+                ),
+            );
+        }
+
+#########
+2.5) Tests schrijven
+2.5.1) Entity test schrijven voorbeeld:
+        namespace PacmanTest\Model\Project;
+
+        use Pacman\Model\Project\Entity;
+        use PHPUnit_Framework_Testcase;
+
+        class EntityTest extends PHPUnit_Framework_Testcase
+        {
+            /**
+             * test Project initinal state
+             */
+            public function testProjectInitialState()
+            {
+                $entity = new Entity();
+
+                $this->assertNull($entity->id, '"id" should be NULL');
+                $this->assertNull($entity->name, '"name" should be NULL');
+                $this->assertNull($entity->description, '"description" should be NULL');
+            }
+
+            /**
+             * test if exchangeArray() sets the properties correctly
+             */
+            public function testExchangeArraySetsPropertiesCorrectly()
+            {
+                $entity = new Entity();
+
+                $data = array(
+                    'id' => 123,
+                    'name' => 'Project X',
+                    'description' => 'Test description',
+                    'url' => 'http://www.test.net',
+                );
+
+                $entity->exchangeArray($data);
+
+                $this->assertSame($data['id'], $entity->id, '"id" was not set correctly');
+                $this->assertSame($data['name'], $entity->name, '"name" was not set correctly');
+                $this->assertSame($data['description'], $entity->description, '"description" was not set correctly');
+                $this->assertSame($data['url'], $entity->url, '"description" was not set correctly');
+            }
+        }
+
+##########
+2.5.2) Table test schrijven voorbeeld:
+        namespace PacmanTest\Model\Project;
+
+        use Pacman\Model\Project\Table;
+        use Pacman\Model\Project\Entity;
+        use Zend\Db\ResultSet\ResultSet;
+        use Zend\Db\Sql\Sql;
+        use Zend\Db\Sql\Select;
+        use PHPUnit_Framework_TestCase;
+
+        class TableTest extends PHPUnit_Framework_TestCase
+        {
+            /**
+             * test if fetchAll() returns a ResultSet object.
+             */
+            public function testFetchAllReturnsResultset()
+            {
+                $resultSet        = new ResultSet();
+                $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway',
+                                                   array('select'), array(), '', false);
+                $mockTableGateway->expects($this->once())
+                                 ->method('select')
+                                 ->will($this->returnValue($resultSet));
+
+                $projectTable = new Table($mockTableGateway);
+
+                $this->assertSame($resultSet, $projectTable->fetchAll());
+            }
+
+            /**
+             * test if findProject($id) returns a Project
+             */
+            public function testCanRetrieveProjectByItsId()
+            {
+                $project = new Entity();
+                $project->exchangeArray(array(
+                    'id' => 123,
+                    'name' => 'Project X',
+                    'description' => 'Test description',
+                    'url' => 'http://www.test.net',
+                ));
+
+                $resultSet = new ResultSet();
+                $resultSet->setArrayObjectPrototype(new Entity());
+                $resultSet->initialize(array($project));
+
+                $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway', array('select'), array(), '', false);
+                $mockTableGateway->expects($this->once())
+                                 ->method('select')
+                                 ->with(array('id' => 123))
+                                 ->will($this->returnValue($resultSet));
+
+                $projectTable = new Table($mockTableGateway);
+
+                $this->assertSame($project, $projectTable->findProject(123));
+            }
+
+            /**
+             * Test if findProject($id) returns null
+             * when we’re trying to retrieve a Project that doesn’t exist.
+             */
+            public function testCannotRetrieveProjectByItsId()
+            {
+                $resultSet = new ResultSet();
+                $resultSet->setArrayObjectPrototype(new Entity());
+                $resultSet->initialize(array());
+
+                $row_id = 123;
+
+                $mockTableGateway = $this->getMock('Zend\Db\TableGateway\TableGateway', array('select'), array(), '', false);
+                $mockTableGateway->expects($this->once())
+                                 ->method('select')
+                                 ->with(array('id' => $row_id))
+                                 ->will($this->returnValue($resultSet));
+
+                $projectTable = new Table($mockTableGateway);
+
+                $this->assertNull($projectTable->findProject($row_id));
+            }
+        }
+
+##########
+2.6) In de controller kan de tableGateway als volgt aangeroepen worden:
+
+        /**
+         * get Project TableGateway
+         *
+         * @return Model\Project\Table
+         */
+        public function getProjectTable()
+        {
+            return $this->getServiceLocator()->get('Model\Project\Table');
+        }
+
+
+
+
+
+#####################################################################################################
+3) Controller aanmaken
+3.1) Controller file aanmaken in de Controllers dir
+
+3.2) Extend de AbstractActionController
+
+3.3) Maak je actions aan
+
+    namespace Pacman\Controller;
+
+    use Zend\Mvc\Controller\AbstractActionController;
+    use Zend\View\Model\ViewModel;
+
+    class ProjectController extends AbstractActionController
+    {
+        /**
+         * list of projects
+         */
+        public function listAction()
+        {
+            return new ViewModel(array(
+                'projects' => $this->getProjectTable()->fetchAll(),
+            ));
+        }
+    }
+
+
+
+3.4) Voeg routes toe in module.config.php
+
+        return array(
+            'router' => array(
+                'routes' => array(
+
+                    ##start routes            
+                    
+                    'project' => array(
+                        'type'    => 'segment',
+                        'options' => array(
+                            'route'    => '/project[/:action][/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Pacman\Controller\Project',
+                                'action'     => 'list',
+                            ),
+                        ),
+                    ),
+
+                    ##end routes
+
+                ),
+            ),
+        );
+
+3.5) Tests schrijven
+Controller tests worden aangemaakt in module/Pacman/test/PacmanTest/Controller
+- extend AbstractControllerTest
+- Set controller en routematch in "protected function setUp()" en roep aan het eind v/d functie parent::setUp() aan
+- schrijf tests voor de functies. Hieronder een voorbeeld met Project:
+
+    namespace PacmanTest\Controller;
+
+    use Pacman\Controller\ProjectController;
+    use PacmanTest\Controller\AbstractControllerTest;
+    use Zend\Mvc\Router\RouteMatch;
+
+    class ProjectControllerTest extends AbstractControllerTest
+    {
+        /**
+         * Test setup
+         * @see PacmanTest\Controller.AbstractControllerTest::setUp()
+         */
+        protected function setUp()
+        {
+            $this->controller = new ProjectController();
+            $this->routeMatch = new RouteMatch(array('controller' => 'project'));
+            parent::setUp();
+        }
+
+        /**
+         * Test if getProjectTable() returns a
+         * Pacman\Model\Project\ProjectTable instance
+         */
+        public function testGetProjectTableReturnsAnInstanceOfProjectTable()
+        {
+            $this->assertInstanceOf(
+                'Pacman\Model\Project\Table',
+                $this->controller->getProjectTable()
+            );
+        }
+
+        /**
+         * Test if List action can be accessed
+         */
+        public function testListActionCanBeAccessed()
+        {
+            $this->assertActionCanBeAccessed('list');
+        }
+    }
+
+###################################################################################################################
+4) view aanmaken
+
+4.1) view dir aanmaken in view dir
+     default = controllername b.v: module/Pacman/view/pacman/project
+
+4.2) view files aanmaken en vullen
+     viewnaam refereren aan controller action
+     bv: module/Pacman/view/pacman/project/list.phtml
+
+####################################################################################################################
+
+
+
+
