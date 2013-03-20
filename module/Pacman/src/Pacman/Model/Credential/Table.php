@@ -39,6 +39,24 @@ class Table extends TableAbstract
         return $rowset->current();
     }
 
+    
+    /**
+     * Save credential (new / edit)
+     *
+     * @todo - This is a stub! As you can see.
+     *
+     * @param array $properties
+     * @return Entity
+     */
+    public function saveCredential($properties)
+    {
+        echo '<pre>';
+            var_dump($properties->inputFilter);
+        echo '</pre>';
+    
+        return 1;
+    }
+    
     /**
      * Fetch passwords by Project and Category
      *

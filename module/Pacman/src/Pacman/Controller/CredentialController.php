@@ -11,6 +11,9 @@ namespace Pacman\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
+use Pacman\Model\Credential;
+use Pacman\Form\CredentialForm;
+
 class CredentialController extends AbstractActionController
 {
     /**
@@ -54,9 +57,24 @@ class CredentialController extends AbstractActionController
      */
     public function addAction()
     {
-        $project_id = (int) $this->params()->fromRoute('project_id');
-    
-        return new ViewModel(array());
+        $form = new CredentialForm();
+        $form->get('submit')->setValue('Add');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $credential = new Credential\Entity();
+            $form->setInputFilter($credential->getInputFilter());
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $credential->exchangeArray($form->getData());
+                $this->getCredentialTable()->saveCredential($credential);
+
+                // Redirect to list of albums
+                return $this->redirect()->toRoute('credential');
+            }
+        }
+        return array('form' => $form);
     }
 
     /**
