@@ -56,4 +56,5 @@ class Table extends TableAbstract
         $resultSet = $this->tableGateway->selectWith($select);
         return $resultSet;
     }
+
 }

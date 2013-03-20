@@ -6,6 +6,8 @@
 <p><?php echo $this->escapeHtml($project->description); ?></p>
 <p><a href="<?php echo $this->escapeHtml($project->url); ?>" target="_blank"><?php echo $this->escapeHtml($project->url); ?></a></p>
 
+<a href="<?php echo $this->url('project') ?>" class="btn btn-primary"><i class="icon-plus-sign icon-white"></i> <?php echo $this->translate('Add new credential'); ?></a>
+
 <div class="accordion" id="project-accordion">
     <?php $i = 0; ?>
     <?php foreach ($categories as $category) : ?>

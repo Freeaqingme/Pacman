@@ -83,6 +83,7 @@ class Module
                     $tableGateway = Module::getTableGateway($sm, 'category', 'Model\Category\Entity');
                     return new Model\Category\Table($tableGateway);
                 },
+<<<<<<< HEAD
                 'Model\Environment\Table' => function($sm) {
                     $tableGateway = Module::getTableGateway($sm, 'environment', 'Model\Environment\Entity');
                     return new Model\Environment\Table($tableGateway);
@@ -103,7 +104,8 @@ class Module
                     $tableGateway = Module::getTableGateway($sm, 'server', 'Model\Server\Entity');
                     return new Model\Server\Table($tableGateway);
                 },
-
+=======
+>>>>>>> nangko/PACMN-31_setup-category-model
             ),
         );
     }
