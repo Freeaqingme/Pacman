@@ -76,6 +76,32 @@ class CredentialController extends AbstractActionController
         }
         return array('form' => $form);
     }
+    
+    public function deleteAction()
+    {
+        $id = (int) $this->params()->fromRoute('id');    
+        return $this->getCredentialTable()->deleteCredential($id);
+        
+        //@TODO Return to the overview screen immediately
+        
+        //@FIXME This seems like a giant workaround. I guess all we need to do is something like this;
+        //$credential = new Credential($id); //Fetch a new credential entity by id, from the DB
+        //$credential->delete(); //Now delete it from the DB.
+        //
+        // I think we'd need a simple save() and delete() function in an entity. 
+        // The safe function will post an update to the database if the ID is set, 
+        // and perform an insert if the ID is not set.
+        // That way we could make it work like this;
+        if (0==1) {
+            $credential = new Credential();
+            $credential->username = 'Blabla';
+            echo 'Inserted under ID ' . $credential->save();
+            $credential->password = 'secret';
+            echo 'Saved under ID ' . $credential->save();
+            $credential->delete();
+        }
+        //But I have no idea why this was set up so big...
+    }
 
     /**
      * get Project TableGateway
@@ -86,6 +112,7 @@ class CredentialController extends AbstractActionController
     {
         return $this->getServiceLocator()->get('Model\Project\Table');
     }
+    //@FIXME Why are these 'getProjectTable' functions in all controllers? That doens't seem right
 
     /**
      * get Category TableGateway

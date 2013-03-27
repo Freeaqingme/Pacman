@@ -48,6 +48,16 @@ class CredentialForm extends Form
         ));
         
         $this->add(array(
+                'name' => 'notes',
+                'attributes' => array(
+                        'type'    => 'text',
+                ),
+                'options' => array(
+                        'label'   => 'Notes',
+                ),
+        ));
+        
+        $this->add(array(
                 'name' => 'submit',
                 'attributes' => array(
                         'type'  => 'submit',

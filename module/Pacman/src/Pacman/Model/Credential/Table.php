@@ -56,7 +56,6 @@ class Table extends TableAbstract
         $valueArray['category_id'] = 1;
         $valueArray['cluster_id'] = 1;
         $valueArray['server_id'] = 1;
-        $valueArray['notes'] = '';
         $valueArray['username'] = $properties->username;
         $valueArray['password'] = $properties->password;
         $valueArray['url'] = $properties->url;
@@ -73,6 +72,23 @@ class Table extends TableAbstract
                     );
         }
 
+    }
+    
+    public function deleteCredential($properties)
+    {
+        if (is_int($properties)) {
+            //Maybe the code gave us just an ID instead of the whole properties array
+            return $this->tableGateway->delete(array('id' => $properties));
+        } else {
+            //It wasn't an int. Lets assume it was a property array
+            if ($properties->id != null) {
+                return $this->tableGateway->delete(array('id' => $properties->id));
+            } else {
+                return false;
+            }
+            
+        }
+    
     }
     
     /**
