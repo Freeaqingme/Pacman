@@ -49,12 +49,30 @@ class Table extends TableAbstract
      * @return Entity
      */
     public function saveCredential($properties)
-    {
-        echo '<pre>';
-            var_dump($properties->inputFilter);
-        echo '</pre>';
-    
-        return 1;
+    {    
+        //@todo link all the correct ID's
+        $valueArray = array();
+        $valueArray['project_id'] = 1;
+        $valueArray['category_id'] = 1;
+        $valueArray['cluster_id'] = 1;
+        $valueArray['server_id'] = 1;
+        $valueArray['notes'] = '';
+        $valueArray['username'] = $properties->username;
+        $valueArray['password'] = $properties->password;
+        $valueArray['url'] = $properties->url;
+        $valueArray['notes'] = $properties->notes;
+
+        if ($properties->id == null) {
+            //Insert
+            return $this->tableGateway->insert($valueArray);
+            
+        } else {
+            //Update
+            return $this->tableGateway->update($valueArray, 
+                        array('id' => $properties->id)
+                    );
+        }
+
     }
     
     /**
