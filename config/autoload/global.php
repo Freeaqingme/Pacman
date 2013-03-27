@@ -12,5 +12,28 @@
  */
 
 return array(
-    // ...
+     'navigation' => array(
+         'default' => array(
+             array(
+                 'label' => 'Home',
+                 'route' => 'home',
+             ),
+             array(
+                 'label' => 'Customers',
+                 'route' => 'customer',
+             ),
+             array(
+                 'label' => 'Projects',
+                 'route' => 'project',
+             ),
+             array(
+                 'label' => 'Categories',
+                 'route' => 'category',
+             ),
+             array(
+                 'label' => 'Environments',
+                 'route' => 'environment',
+             ),
+         ),
+     ),
 );

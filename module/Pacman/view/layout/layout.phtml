@@ -3,7 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <?php echo $this->headTitle($this->translate('Pacman V2'))->setSeparator(' - ')->setAutoEscape(false) ?>
+        <?php echo $this->headTitle('PacMan 2') ?>
 
         <?php echo $this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0') ?>
 
@@ -15,8 +15,8 @@
 
         <!-- Scripts -->
         <?php echo $this->headScript()->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
-                                      ->prependFile($this->basePath() . '/js/jquery-1.8.2.min.js')
-                                      ->appendFile($this->basePath() . '/js/bootstrap.min.js') ?>
+                                      ->prependFile($this->basePath() . '/js/bootstrap.min.js')
+                                      ->prependFile($this->basePath() . '/js/jquery-1.7.2.min.js') ?>
     </head>
     <body>
 	
@@ -28,30 +28,11 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Pacman V2') ?></a>
+                    <a class="brand" href="<?php echo $this->url('home') ?>"><?php echo $this->translate('PacMan 2') ?></a>
                     <div class="nav-collapse">
-                        <ul class="nav">
-                            <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
-                        </ul>
-						<ul class="nav pull-right">
-						
-							<form class="navbar-search pull-left" action="">
-								<input type="text" class="search-query span2" placeholder="<?php echo $this->translate('Search Pacman') ?>">
-							</form>
-							
-						  <li class="divider-vertical"></li>
-						  
-						  <li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $this->zfcUserDisplayName() ?> <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-							  <li><a href="<?php echo $this->url('zfcuser') ?>"><?php echo $this->translate('My profile'); ?></a></li>
-							  <li class="divider"></li>
-							  <li><a href="<?php echo $this->url('zfcuser/changeemail') ?>"><?php echo $this->translate('Edit email'); ?></a></li>
-							  <li><a href="<?php echo $this->url('zfcuser/changepassword') ?>"><?php echo $this->translate('Edit password'); ?></a></li>
-							  
-							</ul>
-						  </li>
-						</ul>
+
+                        <?php echo $this->navigation('navigation')->menu()->setUlClass('nav'); ?>
+
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
@@ -60,7 +41,7 @@
             <?php echo $this->content; ?>
             <hr>
             <footer>
-                <p>&copy; 2012 Enrise. <?php echo $this->translate('All rights reserved.') ?></p>
+                <p>&copy; 2012 - 2013 Enrise (www.enrise.com). <?php echo $this->translate('All rights reserved.') ?></p>
             </footer>
         </div> <!-- /container -->
         <?php echo $this->inlineScript() ?>

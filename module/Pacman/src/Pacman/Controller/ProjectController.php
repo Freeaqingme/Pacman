@@ -1,10 +1,9 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * Pacman (https://github.com/Enrise/Pacman)
+ * @link https://github.com/Enrise/Pacman for the canonical source repository
+ * @copyright Copyright (c) 2012 Enrise (www.enrise.com)
+ * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Pacman\Controller;
@@ -14,45 +13,96 @@ use Zend\View\Model\ViewModel;
 
 class ProjectController extends AbstractActionController
 {
-	protected $projectTable;
-	protected $environmentTable;
-
-    public function indexAction()
+    /**
+     * list of projects
+     */
+    public function listAction()
     {
         return new ViewModel(array(
-			'projects' => $this->getProjectTable()->fetchLatest(),
-		));
+            'projects' => $this->getProjectTable()->fetchAll(),
+        ));
     }
-	
-	public function viewAction()
+
+    /**
+     * Display project info by id
+     */
+    public function viewAction()
     {
-        
-        $identity=$this->zfcUserAuthentication()->getIdentity();
-        echo $identity->getId();
-        // -> here https://github.com/ZF-Commons/ZfcRbac
-        //var_dump();
-        
-		return new ViewModel(array(
-			'project' => $this->getProjectTable()->fetchProject($this->params()->fromRoute('id', 0)),
-			'environments' => $this->getEnvironmentTable()->fetchAll(),
-		));
+        $id = (int) $this->params()->fromRoute('id');
+
+        $project = $this->getProjectTable()->findProject($id);
+        if (!$project) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+
+        return new ViewModel(array(
+            'project' => $project,
+            'categories' => $this->getCategoryTable()->fetchByProject($project->id),
+            'credentialTable' => $this->getCredentialTable(),
+            'environmentTable' => $this->getEnvironmentTable(),
+            'clusterTable' => $this->getClusterTable(),
+            'serverTable' => $this->getServerTable(),
+        ));
     }
-	
-	public function getProjectTable()
-	{
-		if (!$this->projectTable) {
-			$sm = $this->getServiceLocator();
-			$this->projectTable = $sm->get('Pacman\Module\ProjectTable');
-		}
-		return $this->projectTable;
-	}
-    
-	public function getEnvironmentTable()
-	{
-		if (!$this->environmentTable) {
-			$sm = $this->getServiceLocator();
-			$this->environmentTable = $sm->get('Pacman\Module\EnvironmentTable');
-		}
-		return $this->environmentTable;
-	}
+
+    /**
+     * get Project TableGateway
+     *
+     * @return Model\Project\Table
+     */
+    public function getProjectTable()
+    {
+        return $this->getServiceLocator()->get('Model\Project\Table');
+    }
+
+    /**
+     * get Category TableGateway
+     *
+     * @return Model\Category\Table
+     */
+    public function getCategoryTable()
+    {
+        return $this->getServiceLocator()->get('Model\Category\Table');
+    }
+
+    /**
+     * get Credential TableGateway
+     *
+     * @return Model\Credential\Table
+     */
+    public function getCredentialTable()
+    {
+        return $this->getServiceLocator()->get('Model\Credential\Table');
+    }
+
+    /**
+     * get Environment TableGateway
+     *
+     * @return Model\Environment\Table
+     */
+    public function getEnvironmentTable()
+    {
+        return $this->getServiceLocator()->get('Model\Environment\Table');
+    }
+
+    /**
+     * get Cluster TableGateway
+     *
+     * @return Model\Cluster\Table
+     */
+    public function getClusterTable()
+    {
+        return $this->getServiceLocator()->get('Model\Cluster\Table');
+    }
+
+    /**
+     * get Server TableGateway
+     *
+     * @return Model\Server\Table
+     */
+    public function getServerTable()
+    {
+        return $this->getServiceLocator()->get('Model\Server\Table');
+    }
 }

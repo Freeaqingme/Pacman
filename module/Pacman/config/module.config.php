@@ -9,11 +9,6 @@
 
 
 return array(
-        //'controller_plugins' => array(
-                //'invokables' => array(
-                        //'acceptantViewModelSelector' => 'Pacman\Mvc\Controller\Plugin\AcceptantViewModelSelector',
-                        //)
-                        //),
 
     'router' => array(
         'routes' => array(
@@ -27,7 +22,8 @@ return array(
                     ),
                 ),
             ),
-			'project' => array(
+            
+            'project' => array(
                 'type'    => 'segment',
                 'options' => array(
                     'route'    => '/project[/:action][/:id]',
@@ -37,13 +33,71 @@ return array(
                     ),
                     'defaults' => array(
                         'controller' => 'Pacman\Controller\Project',
-                        'action'     => 'index',
+                        'action'     => 'list',
                     ),
                 ),
             ),
-			
-			
-			
+            
+            'category' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/category[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pacman\Controller\Category',
+                        'action'     => 'list',
+                    ),
+                ),
+            ),
+
+            'environment' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/environment[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pacman\Controller\Environment',
+                        'action'     => 'list',
+                    ),
+                ),
+            ),
+            
+            'customer' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/customer[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pacman\Controller\Customer',
+                        'action'     => 'list',
+                    ),
+                ),
+            ),
+            
+            'credential' => array(
+                    'type'    => 'segment',
+                    'options' => array(
+                            'route'    => '/credential[/:action][/:id]',
+                            'constraints' => array(
+                                    'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                    'controller' => 'Pacman\Controller\Credential',
+                                    'action'     => 'list',
+                            ),
+                    ),
+            ),
+            
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
@@ -85,6 +139,7 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+            'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
         ),
     ),
     'translator' => array(
@@ -100,7 +155,11 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Pacman\Controller\Index' => 'Pacman\Controller\IndexController',
-            'Pacman\Controller\Project' => 'Pacman\Controller\ProjectController'
+            'Pacman\Controller\Project' => 'Pacman\Controller\ProjectController',
+            'Pacman\Controller\Category' => 'Pacman\Controller\CategoryController',
+            'Pacman\Controller\Environment' => 'Pacman\Controller\EnvironmentController',
+            'Pacman\Controller\Customer' => 'Pacman\Controller\CustomerController',
+            'Pacman\Controller\Credential' => 'Pacman\Controller\CredentialController',
         ),
     ),
     'view_manager' => array(

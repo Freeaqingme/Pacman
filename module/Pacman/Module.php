@@ -10,8 +10,9 @@
 namespace Pacman;
 
 use Zend\Mvc\ModuleRouteListener;
-use Zend\ModuleManager\ModuleManager;
-use \Zend\Mvc\MvcEvent;
+use Zend\Mvc\MvcEvent;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\TableGateway\TableGateway;
 
 use Pacman\Model\ProjectTable;
 use Pacman\Model\EnvironmentTable;
@@ -47,7 +48,6 @@ class Module
         );
     }
 
-
     public function redirectUnauthedUsersEvent(MvcEvent $e)
     {
         $matches      = $e->getRouteMatch();
@@ -79,22 +79,50 @@ class Module
 
         return $response;
     }
-	
-	public function getServiceConfig()
-	{
-		return array(
-			'factories' => array(
-				'Pacman\Module\ProjectTable' => function($sm) {
-					$dbAdapter	=	$sm->get('Zend\Db\Adapter\Adapter');
-					$table		=	new ProjectTable($dbAdapter);
-					return $table;
-				},
-                'Pacman\Module\EnvironmentTable' => function($sm) {
-					$dbAdapter	        =	$sm->get('Zend\Db\Adapter\Adapter');
-					$environmentTable	=	new EnvironmentTable($dbAdapter);
-					return $environmentTable;
-				},
-			),
-		);
-	}
+
+    public function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'Model\Project\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'project', 'Model\Project\Entity');
+                    return new Model\Project\Table($tableGateway);
+                },
+                'Model\Category\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'category', 'Model\Category\Entity');
+                    return new Model\Category\Table($tableGateway);
+                },
+                'Model\Environment\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'environment', 'Model\Environment\Entity');
+                    return new Model\Environment\Table($tableGateway);
+                },
+                'Model\Customer\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'customer', 'Model\Customer\Entity');
+                    return new Model\Customer\Table($tableGateway);
+                },
+                'Model\Credential\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'credential', 'Model\Credential\Entity');
+                    return new Model\Credential\Table($tableGateway);
+                },
+                'Model\Cluster\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'cluster', 'Model\Cluster\Entity');
+                    return new Model\Cluster\Table($tableGateway);
+                },
+                'Model\Server\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'server', 'Model\Server\Entity');
+                    return new Model\Server\Table($tableGateway);
+                },
+
+            ),
+        );
+    }
+
+    static public function getTableGateway($sm, $tableName, $entityName)
+    {
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+        $resultSetPrototype = new ResultSet();
+        $entityName = 'Pacman\\' . $entityName;
+        $resultSetPrototype->setArrayObjectPrototype(new $entityName());
+        return new TableGateway($tableName, $dbAdapter, null, $resultSetPrototype);
+    }
 }

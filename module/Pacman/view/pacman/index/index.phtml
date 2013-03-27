@@ -5,41 +5,40 @@
 </div>
 
 <div class="row">
-
     <div class="span4">
         <h2><?php echo $this->translate('Latest projects') ?></h2>
         <p>
-			<ul>
-				<li>Project 3</li>
-				<li>Project 2</li>
-				<li>Project 1</li>
-			</ul>
-		</p>
+            <ul>
+                <?php
+                    foreach ($projects as $project) {
+                        echo '<li><a href="' . $this->url('project',array('action'=>'view','id'=>$project->id)) . '">' . $this->escapeHtml($project->name) . '</a></li>';
+                    }
+                ?>
+            </ul>
+        </p>
         <p><a class="btn btn-success" href="<?php echo $this->url('project') ?>"><?php echo $this->translate('Project overview') ?> &raquo;</a></p>
     </div>
 
     <div class="span4">
         <h2><?php echo $this->translate('Latest changes') ?></h2>
         <p>
-			<ul>
-				<li>rquist @ Project 1: Added new login</li>
-				<li>dschimmel @ Project 1: Added new server</li>
-				<li>dschimmel @ Project 5: Removed server</li>
-			</ul>
-		</p>
+            <ul>
+                <li>rquist @ Project 1: Added new login</li>
+                <li>dschimmel @ Project 1: Added new server</li>
+                <li>dschimmel @ Project 5: Removed server</li>
+            </ul>
+        </p>
         <p><a class="btn btn-success" href="http://framework.zend.com/zf2" target="_blank"><?php echo $this->translate('Logs') ?> &raquo;</a></p>
     </div>
 
    <div class="span4">
        <h2><?php echo $this->translate('More information') ?></h2>
-		<p>
-		<?php echo $this->translate('
-		<a href="http://wiki.enrise.com/" target="_blank">Enrise Wiki</a><br/>
-		<a href="http://support.enrise.com/staff/" target="_blank">Enrise Support</a><br/>
-		<a href="http://mail.enrise.com:4040" target="_blank">Enrise Mailserver admin</a><br/>
-		<a href="http://tim.enrise.com/" target="_blank">TIM</a><br/>
-		'); ?>
-		</p>
+        <p>
+            <a href="http://wiki.enrise.com/" target="_blank">Enrise Wiki</a><br/>
+            <a href="http://support.enrise.com/staff/" target="_blank">Enrise Support</a><br/>
+            <a href="http://mail.enrise.com:4040" target="_blank">Enrise Mailserver admin</a><br/>
+            <a href="http://tim.enrise.com/" target="_blank">TIM</a><br/>
+        </p>
        <p><a class="btn btn-success" href="http://www.google.com/" target="_blank"><?php echo $this->translate('Click here for your friend') ?> &raquo;</a></p>
    </div>
 </div>

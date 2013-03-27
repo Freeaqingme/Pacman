@@ -1,10 +1,9 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * Pacman (https://github.com/Enrise/Pacman)
+ * @link https://github.com/Enrise/Pacman for the canonical source repository
+ * @copyright Copyright (c) 2012 Enrise (www.enrise.com)
+ * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Pacman\Controller;
@@ -14,8 +13,17 @@ use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
+    /**
+     * Default action / Homepage
+     * @return ViewModel
+     */
     public function indexAction()
     {
-        return new ViewModel();
+        $sm = $this->getServiceLocator();
+        $projectTable = $sm->get('Model\Project\Table');
+
+        return new ViewModel(array(
+            'projects' => $projectTable->fetchLatest(),
+        ));
     }
 }

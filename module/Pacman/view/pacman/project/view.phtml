@@ -1,11 +1,84 @@
-<div class="hero-unit">
-    <h1><?php echo sprintf($this->translate('Project <span class="zf-green">%s</span>'), $project->name); ?></h1>
-	<p><?php echo $project->description; ?></p>
-	<ul>
-        <?php
-            foreach ($environments as $environment) {
-                echo '<li>' . $environment->name . '</li>';
-            }
-        ?>
-    </ul>
+<h1>
+    <a href="<?php echo $this->url('project') ?>"><?php echo $this->translate('Projects')?></a>
+    <span>></span>
+    <span><?php echo $this->escapeHtml($project->name); ?></span>
+</h1>
+<p><?php echo $this->escapeHtml($project->description); ?></p>
+<p><a href="<?php echo $this->escapeHtml($project->url); ?>" target="_blank"><?php echo $this->escapeHtml($project->url); ?></a></p>
+
+<a href="<?php echo $this->url('credential/add', array('project_id' => $project->id)); ?>" class="btn btn-primary"><i class="icon-plus-sign icon-white"></i> <?php echo $this->translate('Add new credential'); ?></a>
+
+<div class="accordion" id="project-accordion">
+    <?php $i = 0; ?>
+    <?php foreach ($categories as $category) : ?>
+        <?php $i++; ?>
+        <?php $credentials = $credentialTable->fetchByProjectAndCategory($project->id, $category->id); ?>
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#project-accordion" href="#collapse<?php echo $i; ?>">
+                    <?php echo $category->name; ?> (<?php echo count($credentials); ?>)
+                </a>
+            </div>
+            <div id="collapse<?php echo $i; ?>" class="accordion-body collapse <?php if ($i==1) { echo 'in'; } ; ?>">
+                <div class="accordion-inner">
+                    <?php foreach ($credentials as $credential) :
+                            $environments = $environmentTable->fetchByCredential($credential->id);
+                            $cluster = $clusterTable->findCluster($credential->clusterId);
+                            $server = $serverTable->findServer($credential->serverId);
+                        ?>
+                        <div class="credential-container">
+                            <div class="row-fluid">
+                                <div class="span2"><?php echo $this->translate('Url'); ?> : </div>
+                                <div class="span9"><?php echo $credential->url; ?></div>
+                                <div class="span1 options">
+                                    <a href=""><?php echo $this->translate('Edit'); ?></a>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span2"><?php echo $this->translate('Notes'); ?> : </div>
+                                <div class="span9"><?php echo $credential->notes; ?></div>
+                                <div class="span1 options">
+                                    <a href=""><?php echo $this->translate('Delete'); ?></a>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span2"><?php echo $this->translate('Username'); ?> : </div>
+                                <div class="span6"><?php echo $credential->username; ?></div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span2"><?php echo $this->translate('Password'); ?> : </div>
+                                <div class="span6"><?php echo $credential->password; ?></div>
+                            </div>
+                            <?php if ($cluster) : ?>
+                                <div class="row-fluid">
+                                    <div class="span2"><?php echo $this->translate('Cluster'); ?> : </div>
+                                    <div class="span6"><?php echo $cluster->name; ?></div>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($server) : ?>
+                                <div class="row-fluid">
+                                    <div class="span2"><?php echo $this->translate('Server'); ?> : </div>
+                                    <div class="span6"><?php echo $server->name; ?></div>
+                                </div>
+                            <?php endif; ?>
+                            <div class="row-fluid">
+                                <div class="span2"><?php echo $this->translate('Environments'); ?> : </div>
+                                <div class="span6">
+                                    <?php $environmentFirst = true;
+                                    foreach ($environments as $environment) {
+                                        if ($environmentFirst) {
+                                            $environmentFirst = FALSE;
+                                        } else {
+                                            echo ' / ';
+                                        }
+                                        echo $environment->name;
+                                    } ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
 </div>
