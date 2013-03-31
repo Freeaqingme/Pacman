@@ -21,5 +21,6 @@ class Entity extends EntityAbstract
             'name' => null,
             'description' => null,
             'url' => null,
+            'customer_id' => null,
     );
 }

@@ -38,6 +38,11 @@ class ProjectController extends AbstractActionController
 
         return new ViewModel(array(
             'project' => $project,
+            'categories' => $this->getCategoryTable()->fetchByProject($project->id),
+            'credentialTable' => $this->getCredentialTable(),
+            'environmentTable' => $this->getEnvironmentTable(),
+            'clusterTable' => $this->getClusterTable(),
+            'serverTable' => $this->getServerTable(),
         ));
     }
 
@@ -49,5 +54,55 @@ class ProjectController extends AbstractActionController
     public function getProjectTable()
     {
         return $this->getServiceLocator()->get('Model\Project\Table');
+    }
+
+    /**
+     * get Category TableGateway
+     *
+     * @return Model\Category\Table
+     */
+    public function getCategoryTable()
+    {
+        return $this->getServiceLocator()->get('Model\Category\Table');
+    }
+
+    /**
+     * get Credential TableGateway
+     *
+     * @return Model\Credential\Table
+     */
+    public function getCredentialTable()
+    {
+        return $this->getServiceLocator()->get('Model\Credential\Table');
+    }
+
+    /**
+     * get Environment TableGateway
+     *
+     * @return Model\Environment\Table
+     */
+    public function getEnvironmentTable()
+    {
+        return $this->getServiceLocator()->get('Model\Environment\Table');
+    }
+
+    /**
+     * get Cluster TableGateway
+     *
+     * @return Model\Cluster\Table
+     */
+    public function getClusterTable()
+    {
+        return $this->getServiceLocator()->get('Model\Cluster\Table');
+    }
+
+    /**
+     * get Server TableGateway
+     *
+     * @return Model\Server\Table
+     */
+    public function getServerTable()
+    {
+        return $this->getServiceLocator()->get('Model\Server\Table');
     }
 }

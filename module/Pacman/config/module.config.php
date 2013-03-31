@@ -22,6 +22,7 @@ return array(
                     ),
                 ),
             ),
+            
             'project' => array(
                 'type'    => 'segment',
                 'options' => array(
@@ -36,6 +37,67 @@ return array(
                     ),
                 ),
             ),
+            
+            'category' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/category[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pacman\Controller\Category',
+                        'action'     => 'list',
+                    ),
+                ),
+            ),
+
+            'environment' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/environment[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pacman\Controller\Environment',
+                        'action'     => 'list',
+                    ),
+                ),
+            ),
+            
+            'customer' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/customer[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Pacman\Controller\Customer',
+                        'action'     => 'list',
+                    ),
+                ),
+            ),
+            
+            'credential' => array(
+                    'type'    => 'segment',
+                    'options' => array(
+                            'route'    => '/credential[/:action][/:id]',
+                            'constraints' => array(
+                                    'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    'id'     => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                    'controller' => 'Pacman\Controller\Credential',
+                                    'action'     => 'list',
+                            ),
+                    ),
+            ),
+            
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
@@ -65,12 +127,19 @@ return array(
                         ),
                     ),
                 ),
+                'permission' => array (
+                    'admin' => 512,
+                    'alterlogin' => 256,
+                    'modifyallprojects' => 128,
+                    'createproject' => 64,
+                ),
             ),
         ),
     ),
     'service_manager' => array(
         'factories' => array(
             'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
+            'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
         ),
     ),
     'translator' => array(
@@ -87,6 +156,10 @@ return array(
         'invokables' => array(
             'Pacman\Controller\Index' => 'Pacman\Controller\IndexController',
             'Pacman\Controller\Project' => 'Pacman\Controller\ProjectController',
+            'Pacman\Controller\Category' => 'Pacman\Controller\CategoryController',
+            'Pacman\Controller\Environment' => 'Pacman\Controller\EnvironmentController',
+            'Pacman\Controller\Customer' => 'Pacman\Controller\CustomerController',
+            'Pacman\Controller\Credential' => 'Pacman\Controller\CredentialController',
         ),
     ),
     'view_manager' => array(
@@ -95,9 +168,10 @@ return array(
         'doctype'                  => 'HTML5',
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
-        'template_map' => array(
+        'template_map' => array(    //I guess there is a better, easier way for this...
             'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
             'pacman/index/index'      => __DIR__ . '/../view/pacman/index/index.phtml',
+            'pacman/projects/index'   => __DIR__ . '/../view/pacman/projects/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
         ),

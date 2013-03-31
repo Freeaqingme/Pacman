@@ -1,0 +1,24 @@
+<h1><?php echo $this->translate('Environments'); ?></h1>
+<p><?php echo $this->translate('An overview of all environments.'); ?></p>
+
+<table class="table">
+    <tr>
+        <th><?php echo $this->translate('Name'); ?></th>
+        <th>&nbsp;</th>
+    </tr>
+    <?php foreach ($environments as $environment) : ?>
+        <tr>
+            <td>
+                <a href="<?php echo $this->url('environment',array('action'=>'view','id'=>$environment->id)); ?>">
+                    <?php echo $this->escapeHtml($environment->name); ?>
+                </a>
+            </td>
+            <td>
+                <a href="<?php echo $this->url('environment',
+                    array('action'=>'edit', 'id' => $environment->id)); ?>">Edit</a>
+                <a href="<?php echo $this->url('environment',
+                    array('action'=>'delete', 'id' => $environment->id)); ?>">Delete</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>

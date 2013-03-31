@@ -11,14 +11,19 @@ namespace Pacman;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Zend\ModuleManager\ModuleManager;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
+
+use Pacman\Model\ProjectTable;
+use Pacman\Model\EnvironmentTable;
 
 class Module
 {
     public function onBootstrap($e)
     {
+        error_reporting(E_ALL);
+        ini_set('display_errors',1);
+                
         $e->getApplication()->getServiceManager()->get('translator');
         $em                  = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
@@ -58,6 +63,9 @@ class Module
 
         //@TODO: How do we get module here as well?
         if ($controller == 'zfcuser' && ($action == 'register') || $action == 'login') {
+            
+            //var_dump($auth);
+            
             return null;
         }
 
@@ -80,15 +88,40 @@ class Module
                     $tableGateway = Module::getTableGateway($sm, 'project', 'Model\Project\Entity');
                     return new Model\Project\Table($tableGateway);
                 },
+                'Model\Category\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'category', 'Model\Category\Entity');
+                    return new Model\Category\Table($tableGateway);
+                },
+                'Model\Environment\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'environment', 'Model\Environment\Entity');
+                    return new Model\Environment\Table($tableGateway);
+                },
+                'Model\Customer\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'customer', 'Model\Customer\Entity');
+                    return new Model\Customer\Table($tableGateway);
+                },
+                'Model\Credential\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'credential', 'Model\Credential\Entity');
+                    return new Model\Credential\Table($tableGateway);
+                },
+                'Model\Cluster\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'cluster', 'Model\Cluster\Entity');
+                    return new Model\Cluster\Table($tableGateway);
+                },
+                'Model\Server\Table' => function($sm) {
+                    $tableGateway = Module::getTableGateway($sm, 'server', 'Model\Server\Entity');
+                    return new Model\Server\Table($tableGateway);
+                },
+
             ),
         );
     }
 
     static public function getTableGateway($sm, $tableName, $entityName)
     {
-        $entityName = 'Pacman\\' . $entityName;
         $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
         $resultSetPrototype = new ResultSet();
+        $entityName = 'Pacman\\' . $entityName;
         $resultSetPrototype->setArrayObjectPrototype(new $entityName());
         return new TableGateway($tableName, $dbAdapter, null, $resultSetPrototype);
     }

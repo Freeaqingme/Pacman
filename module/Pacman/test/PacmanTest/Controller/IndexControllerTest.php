@@ -16,7 +16,6 @@ use PacmanTest\Bootstrap;
 
 class IndexControllerTest extends AbstractControllerTest
 {
-
     /**
      * Test setup
      * @see PacmanTest\Controller.AbstractControllerTest::setUp()

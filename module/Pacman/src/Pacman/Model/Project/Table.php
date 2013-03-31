@@ -12,7 +12,6 @@ use Pacman\Model\Table as TableAbstract;
 
 class Table extends TableAbstract
 {
-
     /**
      * Fetch all
      *
@@ -36,6 +35,20 @@ class Table extends TableAbstract
         $select->order('id DESC')->limit($limit);
 
         return $this->tableGateway->selectWith($select);
+    }
+
+    /**
+     * Fetch by customer id
+     *
+     * @return ResultSet
+     */
+    public function fetchByCustomerId($customerId)
+    {
+        $customerId  = (int) $customerId;
+
+        return $this->tableGateway->select(array(
+            'customer_id' => $customerId,
+        ));
     }
 
     /**
